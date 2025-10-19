@@ -94,7 +94,7 @@
 
         <!-- Grid -->
         <% if (typeof modules !=='undefined' && modules.length> 0) { %>
-          <div class="grid">
+          <div class="grid" id="grid-modules">
           <% modules.forEach(m=> { %>
             
               <!-- Calendario -->
@@ -410,6 +410,8 @@
 
   <script>
     (() => {
+      const MODULES_GRID = document.getElementById('grid-modules');
+
       // Cerrar todos los menús
       function closeAllMenus() {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.hidden = true);
@@ -479,6 +481,13 @@
               const txt = await res.text().catch(() => '');
               throw new Error(txt || (`${res.status} ${res.statusText}`));
             }
+
+            const modules = MODULES_GRID.getElementsByClassName('card')
+            console.log(modules.length)
+            if (modules.length <= 1) {
+              return window.location.reload();
+            }  
+
             card?.remove();
             sidebarCard?.remove();
             closeAllMenus();
