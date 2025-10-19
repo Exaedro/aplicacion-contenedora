@@ -128,7 +128,7 @@ function ensureRecord(slug) {
 // ============================================================
 // INSTALACIÓN DE MÓDULOS DESDE ZIP
 // ============================================================
-export async function installFromZip(zipFilePath) {
+export async function installFromZip(zipFilePath, { customName, description } = {}) {
   const zip = new AdmZip(zipFilePath);
   const entries = zip.getEntries();
   const topName = entries[0]?.entryName.split('/')[0] || `mod-${nanoid(6)}`;
@@ -155,7 +155,9 @@ export async function installFromZip(zipFilePath) {
     port: null,
     pid: null,
     status: 'installed',
-    createdAt: Date.now()
+    description: description,
+    customName,
+    createdAt: Date.now(),
   };
   await saveRegistry();
   return registry[slug];
