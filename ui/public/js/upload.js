@@ -43,17 +43,53 @@
         modal.addEventListener('keydown', trapFocus);
         setTimeout(() => document.getElementById('modName').focus(), 0);
         window.lucide && window.lucide.createIcons();
+
+        // 🪄 ANIMACIÓN con GSAP
+        const overlay = modal.querySelector('.modal__overlay');
+        const dialog = modal.querySelector('.modal__dialog');
+
+        // por si hay animaciones previas
+        gsap.killTweensOf([overlay, dialog]);
+
+        // asegúrate de que el modal esté visible para poder animar
+        gsap.set(dialog, { transformOrigin: '50% 40%', willChange: 'transform,opacity', force3D: true });
+
+        // overlay (fondo) fade-in
+        gsap.fromTo(overlay,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.25, ease: 'power2.out' }
+        );
+
+        // diálogo con "rebote" (zoom + slide + leve 3D)
+        gsap.fromTo(dialog,
+            { autoAlpha: 0, y: -80, scale: 0.85, rotateX: -10 },
+            { autoAlpha: 1, y: 0, scale: 1, rotateX: 0, duration: 0.37, ease: 'back.out(1.6)' }
+        );
     }
     function closeModal() {
-        modal.classList.remove('is-open');
-        modal.setAttribute('aria-hidden', 'true');
-        window.removeEventListener('keydown', onKey);
-        progWrap.hidden = true;
-        modal.removeEventListener('keydown', trapFocus);
-        if (lastFocused && lastFocused.focus) lastFocused.focus();
-        form.reset();
-        fileNameEl.textContent = 'Acepta solo .zip';
-        resetProgress();
+        const overlay = modal.querySelector('.modal__overlay');
+        const dialog = modal.querySelector('.modal__dialog');
+
+        gsap.killTweensOf([overlay, dialog]);
+
+        // animación de salida
+        gsap.to(dialog, {
+            autoAlpha: 0, y: -60, scale: 0.9, rotateX: -8,
+            duration: 0.35, ease: 'power2.in',
+            onComplete: () => {
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
+                window.removeEventListener('keydown', onKey);
+                progWrap.hidden = true;
+                modal.removeEventListener('keydown', trapFocus);
+                if (lastFocused && lastFocused.focus) lastFocused.focus();
+                form.reset();
+                fileNameEl.textContent = 'Acepta solo .zip';
+                resetProgress();
+            }
+        });
+
+        gsap.to(overlay, { autoAlpha: 0, duration: 0.25, ease: 'power2.in' });
     }
     function onKey(e) { if (e.key === 'Escape') closeModal(); }
 
@@ -126,31 +162,31 @@
 
                 // Agregar tarjeta a la grilla si vuelve { module:{slug,name,description} }
                 if (data?.module) {
-            //         const m = data.module;
-            //         const grid = document.querySelector('.grid');
-            //         if (grid) {
-            //             const el = document.createElement('article');
-            //             el.className = 'card';
-            //             el.setAttribute('data-slug', m.slug);
-            //             el.innerHTML = `
-            //   <div class="card__content">
-            //     <div class="tile secondary-30">
-            //       <i data-lucide="calendar" class="icon-32 secondary"></i>
-            //     </div>
-            //     <div>
-            //       <h3 class="card__title"></h3>
-            //       <p class="muted small"></p>
-            //     </div>
-            //     <a href="/apps/${m.slug}" class="btn chip secondary-50 open-module" data-slug="${m.slug}">Abrir</a>
-            //   </div>`;
-            //             el.querySelector('.card__title').textContent = m.name || m.slug;
-            //             el.querySelector('.muted.small').textContent = m.description || '';
-            //             grid.prepend(el);
-            //             // Wire del botón Abrir (si usás tu openShell)
-            //             const a = el.querySelector('.open-module');
-            //             if (a) a.addEventListener('click', (ev) => { ev.preventDefault(); a.dispatchEvent(new Event('click')); });
-            //             window.lucide && window.lucide.createIcons();
-            //         }
+                    //         const m = data.module;
+                    //         const grid = document.querySelector('.grid');
+                    //         if (grid) {
+                    //             const el = document.createElement('article');
+                    //             el.className = 'card';
+                    //             el.setAttribute('data-slug', m.slug);
+                    //             el.innerHTML = `
+                    //   <div class="card__content">
+                    //     <div class="tile secondary-30">
+                    //       <i data-lucide="calendar" class="icon-32 secondary"></i>
+                    //     </div>
+                    //     <div>
+                    //       <h3 class="card__title"></h3>
+                    //       <p class="muted small"></p>
+                    //     </div>
+                    //     <a href="/apps/${m.slug}" class="btn chip secondary-50 open-module" data-slug="${m.slug}">Abrir</a>
+                    //   </div>`;
+                    //             el.querySelector('.card__title').textContent = m.name || m.slug;
+                    //             el.querySelector('.muted.small').textContent = m.description || '';
+                    //             grid.prepend(el);
+                    //             // Wire del botón Abrir (si usás tu openShell)
+                    //             const a = el.querySelector('.open-module');
+                    //             if (a) a.addEventListener('click', (ev) => { ev.preventDefault(); a.dispatchEvent(new Event('click')); });
+                    //             window.lucide && window.lucide.createIcons();
+                    //         }
                     window.location.reload()
                 }
 

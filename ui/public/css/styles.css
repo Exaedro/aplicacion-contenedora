@@ -111,6 +111,10 @@ body {
     transform: translateY(-50%)
 }
 
+.hidden {
+    display: none!important;
+}
+
 /* ====== Header ====== */
 .header {
     display: flex;
@@ -270,7 +274,7 @@ body {
     height: 32px
 }
 
-.module-empty {
+.main-message {
     font-size: 1.25em;
     display: flex;
     flex-direction: row;
@@ -282,7 +286,7 @@ body {
     justify-content: center;
 }
 
-.module-empty div {
+.main-message div {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -290,12 +294,16 @@ body {
     align-items: center;
 }
 
-.module-empty div:nth-child(2) p:nth-child(3) {
+.main-message div:nth-child(1) img {
+    width: 370px;
+}
+
+.main-message div:nth-child(2) p:nth-child(3) {
     width: 400px;
     text-align: center;
 }
 
-.module-empty div:nth-child(2) svg {
+.main-message div:nth-child(2) svg {
     color: var(--muted);
     width: 58px;
     height: 58px;
@@ -995,4 +1003,8 @@ main:has(#moduleShell.is-open) {
 
 .dropdown-item.danger {
     color: #d12;
+}
+
+.loading-spinner-gif {
+    width: 120px;
 }

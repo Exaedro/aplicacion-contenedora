@@ -24,12 +24,20 @@
 
         // Click en eliminar
         const del = e.target.closest('.delete-module');
+        const toolbar = document.querySelector('.toolbar');
+        const modulesGrid = document.getElementById('grid-modules');
+        const deletingModule = document.querySelector('.deleting-module');
         if (del) {
             const slug = del.dataset.slug;
             if (!slug) return;
 
             const ok = confirm(`¿Eliminar el módulo "${slug}"? Esta acción no se puede deshacer.`);
             if (!ok) { closeAllMenus(); return; }
+
+            // Pantalla de carga eliminando el modulo
+            deletingModule.classList.remove('hidden'); // Mostramos pantalla de carga
+            toolbar.classList.add('hidden'); // Ocultamos toolbar
+            modulesGrid.classList.add('hidden'); // Ocultamos grid
 
             // 1) Si el módulo está abierto en el iframe, se cierra y espera a que quede en blanco
             const iframe = document.getElementById('modFrame');
@@ -72,11 +80,13 @@
                 }
 
                 const modules = MODULES_GRID.getElementsByClassName('card')
-                console.log(modules.length)
                 if (modules.length <= 1) {
                     return window.location.reload();
                 }
 
+                deletingModule.classList.add('hidden'); 
+                toolbar.classList.remove('hidden');
+                modulesGrid.classList.remove('hidden'); 
                 card?.remove();
                 sidebarCard?.remove();
                 closeAllMenus();
