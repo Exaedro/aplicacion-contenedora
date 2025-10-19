@@ -22,9 +22,11 @@ const upload = multer({ dest: path.join(process.cwd(), 'uploads') });
 
 // ---------- API ----------
 app.post('/api/modules/install', upload.single('file'), async (req, res) => {
+    const { moduleName, moduleDescription } = req.body;
+
     try {
         if (!req.file) return res.status(400).json({ error: 'Falta archivo ZIP (campo "file")' });
-        const installed = await installFromZip(req.file.path);
+        const installed = await installFromZip(req.file.path, { customName: moduleName, description: moduleDescription });
         const started = await startModule(installed.slug);
         return res.json({ ok: true, module: started });
     } catch (e) {

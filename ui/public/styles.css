@@ -24,6 +24,8 @@
     --accent: #18BDB0;
     /* igualado a primary */
 
+    --background-blur: rgba(255, 255, 255, .5);
+
     /* Sombra/anillo muy sutil */
     --ring: rgba(0, 0, 0, .06);
 }
@@ -43,6 +45,8 @@ html.dark {
     /* igualado a primary */
     --accent: #2CD5C8;
     /* igualado a primary */
+
+    --background-blur: rgba(0, 0, 0, .5);
 
     --ring: rgba(255, 255, 255, .08);
 }
@@ -497,14 +501,81 @@ main:has(#moduleShell.is-open) {
 /* Topbar (se apoya en tokens neutrales para que cambie solo con :root/html.dark) */
 .mod-shell__topbar {
     display: flex;
-    position: fixed;
+    position: absolute;
     z-index: 10;
     width: 100%;
     align-items: center;
     gap: 12px;
     padding-top: 10px;
-    padding-right: 108px;
+    padding-right: 11px;
     padding-left: 11px;
+    padding-bottom: 10px;
+    background-color: var(--background-blur);
+    backdrop-filter: blur(10px);
+}
+
+:root {
+  --mod-topbar-h: 59px;   /* ajusta si tu topbar es más alta */
+  --mod-tab-h: 0px;      /* lo que quedará visible cuando esté colapsada */
+}
+
+/* Asegura el frame respete la altura de la topbar */
+.mod-shell__framewrap {
+  padding-top: var(--mod-topbar-h);
+  transition: padding-top .2s ease;
+}
+
+/* Tirador centrado al borde inferior de la topbar */
+.mod-shell__toggle {
+  position: absolute;
+  left: 50%;
+  bottom: -35px;               /* sobresale un poco del borde */
+  transform: translateX(-50%);
+  min-width: 56px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: var(--foreground);
+  border: 1px solid var(--border, rgba(0,0,0,.08));
+  background: color-mix(in oklab, var(--background-blur) 85%, #000 0%);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 1000000;                 /* sobre el contenido */
+}
+
+/* Opcional: cambia el cursor al pasar por la pestaña */
+.mod-shell__toggle:hover {
+  filter: brightness(0.98);
+}
+
+/* Transición suave al contraer/expandir la barra */
+.mod-shell__topbar {
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 1px 0 var(--border, rgba(0,0,0,.06));
+}
+
+/* Estado colapsado del shell: 'esconde' la topbar dejando la pestaña visible */
+.mod-shell.is-collapsed .mod-shell__topbar {
+  transform: translateY(calc(-100% + var(--mod-tab-h)));
+}
+
+/* Cuando está colapsado, el frame sube para aprovechar pantalla */
+.mod-shell.is-collapsed .mod-shell__framewrap {
+  padding-top: var(--mod-tab-h);
+}
+
+/* Gira el icono según estado (up = expandido, down = colapsado) */
+/* No todos los navegadores giran SVGs de lucide con CSS, por eso en JS cambiamos el icono.
+   Si quieres efecto extra: */
+.mod-shell.is-collapsed .mod-shell__toggle .icon-14 {
+  transition: transform .2s ease;
+  transform: rotate(180deg);
 }
 
 .mod-shell__brand {
