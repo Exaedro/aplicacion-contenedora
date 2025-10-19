@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aplicación Contenedora</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
   <!-- Lucide (iconos) -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
@@ -74,46 +74,9 @@
         <span class="mod-shell__btn-text">Cerrar</span>
       </button>
       <button id="modShellToggle" class="mod-shell__toggle" aria-expanded="true" aria-label="Contraer barra">
-  <i data-lucide="chevron-up" class="icon-14"></i>
-</button>
-
+        <i data-lucide="chevron-up" class="icon-14"></i>
+      </button>
     </header>
-    <script>
-  (() => {
-    const shell = document.getElementById('moduleShell');
-    const toggleBtn = document.getElementById('modShellToggle');
-
-    if (shell && toggleBtn) {
-      const setIcon = (expanded) => {
-        const icon = toggleBtn.querySelector('i');
-        if (icon) {
-          icon.setAttribute('data-lucide', expanded ? 'chevron-up' : 'chevron-down');
-          window.lucide && window.lucide.createIcons();
-        }
-        toggleBtn.setAttribute('aria-expanded', String(expanded));
-        toggleBtn.setAttribute('aria-label', expanded ? 'Contraer barra' : 'Expandir barra');
-      };
-
-      // Estado inicial: expandido
-      setIcon(true);
-
-      toggleBtn.addEventListener('click', () => {
-        const nowCollapsed = !shell.classList.toggle('is-collapsed') ? false : true;
-        // Ojo: toggle devuelve si añadió la clase; queremos el invertido para "expanded"
-        setIcon(!nowCollapsed);
-      });
-
-      // Atajo de teclado: Ctrl/Cmd + B para alternar (opcional)
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
-          e.preventDefault();
-          toggleBtn.click();
-        }
-      });
-    }
-  })();
-</script>
-
     <div class="mod-shell__framewrap">
       <iframe id="modFrame" class="mod-shell__frame" src="about:blank" allow="clipboard-read; clipboard-write"></iframe>
     </div>
@@ -445,114 +408,11 @@
     </div>
   </div>
 
-  <script>
-    (() => {
-      const MODULES_GRID = document.getElementById('grid-modules');
-
-      // Cerrar todos los menús
-      function closeAllMenus() {
-        document.querySelectorAll('.dropdown-menu').forEach(m => m.hidden = true);
-        document.querySelectorAll('.kebab-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
-      }
-
-      // Toggle del menú (delegación)
-      document.addEventListener('click', async (e) => {
-        const btn = e.target.closest('.kebab-btn');
-        if (btn) {
-          const slug = btn.dataset.menuFor;
-          const menu = document.getElementById('menu-' + slug);
-          const isOpen = btn.getAttribute('aria-expanded') === 'true';
-          closeAllMenus();
-          if (!isOpen && menu) {
-            menu.hidden = false;
-            btn.setAttribute('aria-expanded', 'true');
-          }
-          return; // no seguir
-        }
-
-        // Click en eliminar
-        const del = e.target.closest('.delete-module');
-        if (del) {
-          const slug = del.dataset.slug;
-          if (!slug) return;
-
-          const ok = confirm(`¿Eliminar el módulo "${slug}"? Esta acción no se puede deshacer.`);
-          if (!ok) { closeAllMenus(); return; }
-
-          // 1) Si el módulo está abierto en el iframe, cerralo y esperá a que quede en blanco
-          const iframe = document.getElementById('modFrame');
-          const isOpenInFrame = iframe && iframe.src.includes(`/modulos/${slug}`);
-          if (isOpenInFrame) {
-            await new Promise((resolve) => {
-              const onload = () => { iframe.removeEventListener('load', onload); resolve(); };
-              iframe.addEventListener('load', onload, { once: true });
-              // usa el helper que ya expusimos en shell.js
-              window.__closeShell ? window.__closeShell() : (iframe.src = 'about:blank');
-            });
-            // pequeña espera extra por si Windows tarda en soltar el lock
-            await new Promise(r => setTimeout(r, 120));
-          }
-
-          del.disabled = true;
-          const card = document.querySelector(`.card[data-slug="${CSS?.escape ? CSS.escape(slug) : slug}"]`);
-          const sidebarCard = document.querySelector(`.avatar-modulo[data-slug="${CSS?.escape ? CSS.escape(slug) : slug}"]`);
-
-          try {
-            // Parar el modulo para poder eliminarlo
-            const resStopModule = await fetch(`/api/modules/${encodeURIComponent(slug)}/stop`, {
-              method: 'POST',
-              headers: { 'Accept': 'application/json' },
-              // credentials: 'include'
-            });
-            if (!resStopModule.ok) {
-              const txt = await resStopModule.text().catch(() => '');
-              throw new Error(txt || (`${resStopModule.status} ${resStopModule.statusText}`));
-            }
-
-            const res = await fetch(`/api/modules/${encodeURIComponent(slug)}`, {
-              method: 'DELETE',
-              headers: { 'Accept': 'application/json' },
-              // credentials: 'include'
-            });
-            if (!res.ok) {
-              const txt = await res.text().catch(() => '');
-              throw new Error(txt || (`${res.status} ${res.statusText}`));
-            }
-
-            const modules = MODULES_GRID.getElementsByClassName('card')
-            console.log(modules.length)
-            if (modules.length <= 1) {
-              return window.location.reload();
-            }  
-
-            card?.remove();
-            sidebarCard?.remove();
-            closeAllMenus();
-          } catch (err) {
-            alert('No se pudo eliminar: ' + (err.message || 'Error desconocido'));
-            del.disabled = false;
-            closeAllMenus();
-          }
-          return;
-        }
-
-        // Click fuera: cerrar menús
-        if (!e.target.closest('.dropdown-menu')) closeAllMenus();
-      });
-
-      // Escape cierra menús
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeAllMenus();
-      });
-
-      // Si agregás cards dinámicamente, llamá otra vez:
-      window.lucide && window.lucide.createIcons();
-    })();
-  </script>
-
-  <script src="shell.js"></script>
-  <script src="upload.js"></script>
-  <script src="app.js"></script>
+  <script src="js/modulesActions.js"></script>
+  <script src="js/topbarToggle.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/upload.js"></script>
+  <script src="js/app.js"></script>
 </body>
 
 </html>
