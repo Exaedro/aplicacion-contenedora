@@ -223,7 +223,6 @@ app.use(express.static(process.cwd() + '/ui/public'));
 // ---------- raíz ----------
 app.get('/', async (req, res) => {
     const modules = listModules();
-    console.log(modules)
 
     res.render('index.ejs', { modules });
     //     res.type('html').send(`

@@ -1,320 +1,343 @@
-// moduleManager.js
+/**
+ * ⚠️⚠️⚠️ ADVERTENCIA ⚠️⚠️⚠️
+ * ============================================================
+ *  ESTE ARCHIVO CONTROLA TODO EL SISTEMA DE CONTENEDOR DE MÓDULOS.
+ * 
+ *  !⚠️ NO MODIFICAR NINGUNA LÍNEA A MENOS QUE SEPAS EXACTAMENTE QUÉ ESTÁS HACIENDO ⚠️
+ * 
+ *  CUALQUIER CAMBIO EN ESTE ARCHIVO PUEDE:
+ *    - BLOQUEAR PROCESOS O PUERTOS
+ *    - CORROMPER EL REGISTRO DE MÓDULOS
+ *    - IMPEDIR LA INSTALACIÓN O DESINSTALACIÓN
+ *    - HACER QUE EL CONTENEDOR NO VUELVA A INICIAR
+ * 
+ *  ESTE ARCHIVO ES FUNDAMENTAL PARA EL FUNCIONAMIENTO DE:
+ *    - Instalación de módulos ZIP
+ *    - Ejecución y supervisión de procesos Node/Go/PHP/Python/ETC
+ *    - Registro persistente (modules.json)
+ *    - Reinicio automático tras caída o reboot
+ *    - Liberación segura de recursos (Windows/Linux)
+ * 
+ *  🔒 EN RESUMEN:
+ *  !>>> NO TOCAR ESTE ARCHIVO <<< 
+ * 
+ * ============================================================
+ */
+
+// ============================================================
+// IMPORTACIONES Y CONFIGURACIÓN BASE
+// ============================================================
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { spawn } from 'node:child_process';
+import { spawn, exec } from 'node:child_process';
+import { once } from 'node:events';
 import fs from 'fs-extra';
 import AdmZip from 'adm-zip';
 import getPort from 'get-port';
 import { nanoid } from 'nanoid';
+import http from 'node:http';
 
+// ============================================================
+// DIRECTORIOS Y RUTAS PRINCIPALES
+// ============================================================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = __dirname;
 const DATA_DIR = path.join(ROOT_DIR, 'data');
-const UPLOADS_DIR = path.join(ROOT_DIR, 'uploads');
 const MODULES_DIR = path.join(ROOT_DIR, 'modules');
 const REGISTRY_FILE = path.join(DATA_DIR, 'modules.json');
 
+// Crear carpetas base si no existen
 await fs.ensureDir(DATA_DIR);
-await fs.ensureDir(UPLOADS_DIR);
 await fs.ensureDir(MODULES_DIR);
 
+// ============================================================
+// REGISTRO DE MÓDULOS
+// ============================================================
 const registry = await loadRegistry();
+const registryLength = Object.keys(registry).length;
 
-import http from 'node:http';
+// Al reiniciar el contenedor, reintenta iniciar los módulos activos
+if (registry && registryLength > 0) {
+  for (let i = 0; i < registryLength; i++) {
+    const m = registry[Object.keys(registry)[i]];
+    try {
+      await fetch(`http://localhost:${m.port}`, { method: 'HEAD', timeout: 1500 });
+    } catch {
+      await startModule(m.slug);
+    }
+  }
+}
 
+// ============================================================
+// FUNCIONES AUXILIARES
+// ============================================================
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function slugify(s) {
-    return String(s || '').toLowerCase().trim()
-        .replace(/[^\w\-]+/g, '-').replace(/\-+/g, '-')
-        .replace(/^-+|-+$/g, '') || `mod-${nanoid(6)}`;
+  return String(s || '').toLowerCase().trim()
+    .replace(/[^\w\-]+/g, '-').replace(/\-+/g, '-')
+    .replace(/^-+|-+$/g, '') || `mod-${nanoid(6)}`;
 }
 
 async function loadRegistry() {
-    try { return JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf8')); }
-    catch { return {}; }
-}
-async function saveRegistry() {
-    await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
+  try { return JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf8')); }
+  catch { return {}; }
 }
 
-function interpolateArgs(args, env) {
-    const e = env || {};
-    return (args || []).map(a => a.replace?.(/\$\{(\w+)\}/g, (_, k) => e[k] ?? '') ?? a);
+async function saveRegistry() {
+  await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
 }
 
 function detectDefaults(moduleDir) {
-    // Heurísticas mínimas si no hay manifest
-    const hasPkg = fs.existsSync(path.join(moduleDir, 'package.json'));
-    const hasServerJs = fs.existsSync(path.join(moduleDir, 'server.js'));
-    const hasMainGo = fs.existsSync(path.join(moduleDir, 'main.go'));
-    const hasPublic = fs.existsSync(path.join(moduleDir, 'public'));
-    const hasIndexPhp = fs.existsSync(path.join(moduleDir, 'index.php')) || fs.existsSync(path.join(moduleDir, 'public/index.php'));
+  const hasPkg = fs.existsSync(path.join(moduleDir, 'package.json'));
+  const hasServerJs = fs.existsSync(path.join(moduleDir, 'server.js'));
+  const hasMainGo = fs.existsSync(path.join(moduleDir, 'main.go'));
+  const hasPublic = fs.existsSync(path.join(moduleDir, 'public'));
+  const hasIndexPhp = fs.existsSync(path.join(moduleDir, 'index.php')) || fs.existsSync(path.join(moduleDir, 'public/index.php'));
 
-    if (hasPkg || hasServerJs) {
-        return { language: 'node', start: hasPkg ? 'npm' : 'node', args: hasPkg ? ['start'] : ['server.js'], cwd: '.', healthPath: '/health' };
-    }
-    if (hasMainGo) {
-        return { language: 'go', start: 'go', args: ['run', 'main.go'], cwd: '.', healthPath: '/health' };
-    }
-    if (hasIndexPhp || hasPublic) {
-        const docroot = hasPublic ? 'public' : '.';
-        return { language: 'php', start: 'php', args: ['-S', '127.0.0.1:${PORT}', '-t', docroot], cwd: '.', healthPath: '/health' };
-    }
-    throw new Error('No se pudo detectar el tipo del módulo y no hay manifest.json');
+  if (hasPkg || hasServerJs)
+    return { language: 'node', start: hasPkg ? 'npm' : 'node', args: hasPkg ? ['start'] : ['server.js'], cwd: '.', healthPath: '/health' };
+
+  if (hasMainGo)
+    return { language: 'go', start: 'go', args: ['run', 'main.go'], cwd: '.', healthPath: '/health' };
+
+  if (hasIndexPhp || hasPublic) {
+    const docroot = hasPublic ? 'public' : '.';
+    return { language: 'php', start: 'php', args: ['-S', '127.0.0.1:${PORT}', '-t', docroot], cwd: '.', healthPath: '/health' };
+  }
+
+  throw new Error('No se pudo detectar el tipo del módulo y no hay manifest.json');
 }
 
 async function readManifestOrDetect(moduleDir) {
-    const manifestPath = path.join(moduleDir, 'manifest.json');
-    if (await fs.pathExists(manifestPath)) {
-        const m = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-        if (!m.language) throw new Error('manifest.json: falta "language"');
-        return {
-            name: m.name,
-            slug: m.slug,
-            language: m.language,
-            start: m.start,
-            args: m.args || [],
-            cwd: m.cwd || '.',
-            env: m.env || {},
-            healthPath: m.healthPath || '/health'
-        };
-    }
-    return detectDefaults(moduleDir);
+  const manifestPath = path.join(moduleDir, 'manifest.json');
+  if (await fs.pathExists(manifestPath)) {
+    const m = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+    if (!m.language) throw new Error('manifest.json: falta "language"');
+    return { name: m.name, slug: m.slug, language: m.language, start: m.start, args: m.args || [], cwd: m.cwd || '.', env: m.env || {}, healthPath: m.healthPath || '/health' };
+  }
+  return detectDefaults(moduleDir);
 }
 
 function ensureRecord(slug) {
-    registry[slug] = registry[slug] || {};
+  registry[slug] = registry[slug] || {};
 }
 
-function normalizeDirName(base) {
-    const s = slugify(base);
-    return s || `mod-${nanoid(6)}`;
-}
-
+// ============================================================
+// INSTALACIÓN DE MÓDULOS DESDE ZIP
+// ============================================================
 export async function installFromZip(zipFilePath) {
-    const zip = new AdmZip(zipFilePath);
-    const entries = zip.getEntries();
-    const topName = entries[0]?.entryName.split('/')[0] || `mod-${nanoid(6)}`;
+  const zip = new AdmZip(zipFilePath);
+  const entries = zip.getEntries();
+  const topName = entries[0]?.entryName.split('/')[0] || `mod-${nanoid(6)}`;
+  const destDir = path.join(MODULES_DIR, slugify(topName));
 
-    const destDirName = normalizeDirName(topName);
-    const destDir = path.join(MODULES_DIR, destDirName);
-    await fs.ensureDir(destDir);
+  await fs.ensureDir(destDir);
+  zip.extractAllTo(destDir, true);
 
-    zip.extractAllTo(destDir, true);
+  const moduleRoot = await resolveModuleRoot(destDir);
+  const manifest = await readManifestOrDetect(moduleRoot);
+  const slug = slugify(manifest.slug || manifest.name || topName);
 
-    // NUEVO: localizar la verdadera raíz del módulo (con o sin carpeta envolvente)
-    const moduleRoot = await resolveModuleRoot(destDir);
-
-    const manifest = await readManifestOrDetect(moduleRoot);
-    const name = manifest.name || destDirName;
-    const slug = slugify(manifest.slug || name);
-
-    ensureRecord(slug);
-    registry[slug] = {
-        slug,
-        name,
-        dir: moduleRoot,        // OJO: apuntamos a la raíz real
-        language: manifest.language,
-        start: manifest.start,
-        args: manifest.args,
-        cwd: manifest.cwd,
-        env: manifest.env,
-        healthPath: manifest.healthPath,
-        port: null,
-        pid: null,
-        status: 'installed',
-        createdAt: Date.now()
-    };
-    await saveRegistry();
-    return registry[slug];
+  ensureRecord(slug);
+  registry[slug] = {
+    slug,
+    name: manifest.name || slug,
+    dir: moduleRoot,
+    language: manifest.language,
+    start: manifest.start,
+    args: manifest.args,
+    cwd: manifest.cwd,
+    env: manifest.env,
+    healthPath: manifest.healthPath,
+    port: null,
+    pid: null,
+    status: 'installed',
+    createdAt: Date.now()
+  };
+  await saveRegistry();
+  return registry[slug];
 }
 
-// helpers
-function checkHealthOnce(port, healthPath = '/health', timeoutMs = 1500){
-  return new Promise(resolve => {
-    const req = http.request(
-      { host: '127.0.0.1', port, path: healthPath, method: 'GET', timeout: timeoutMs },
-      res => { res.resume(); resolve(res.statusCode>=200 && res.statusCode<400); }
-    );
-    req.on('timeout', () => { req.destroy(); resolve(false); });
-    req.on('error', () => resolve(false));
-    req.end();
-  });
-}
-async function waitForHealth(port, healthPath, totalMs = 15000, everyMs = 300){
-  const end = Date.now()+totalMs;
-  while(Date.now()<end){
-    if(await checkHealthOnce(port, healthPath)) return true;
-    await sleep(everyMs);
-  }
-  return false;
-}
+// ============================================================
+// INICIO DE MÓDULOS
+// ============================================================
+export async function startModule(slug) {
+  const mod = registry[slug];
+  if (!mod) throw new Error('Módulo no encontrado');
 
-// lee el final de un archivo (para adjuntar en errores)
-async function tailFile(filePath, maxBytes = 8000){
-  try {
-    const stat = await fs.stat(filePath);
-    const start = Math.max(0, stat.size - maxBytes);
-    const buf = await fs.readFile(filePath, {encoding:'utf8', start});
-    return (start>0 ? '...tail...\n' : '') + buf;
-  } catch { return ''; }
-}
-
-// Asegura buen comando/args/env/cwd (usa process.execPath para Node en Windows)
-function buildSpawnSpec(mod, port) {
+  const port = await getPort();
   const env = { ...process.env, PORT: String(port), ...mod.env };
   const args = (mod.args || []).map(a => a.replace?.(/\$\{(\w+)\}/g, (_, k) => env[k] ?? '') ?? a);
-  let command = mod.start;
-
-  if (mod.language === 'node' && command === 'node') {
-    command = process.execPath; // usa el binario actual de Node
-  }
   const cwd = path.join(mod.dir, mod.cwd || '.');
-  return { command, args, cwd, env };
-}
+  const command = mod.start === 'node' ? process.execPath : mod.start;
 
-export async function startModule(slug){
-  const mod = registry[slug];
-  if(!mod) throw new Error('Módulo no encontrado');
-  if(mod.status === 'running') return mod;
-
-  // puerto dinámico (si usás modo puerto fijo, conservá tu lógica)
-  const port = await getPort();
-  const { command, args, cwd, env } = buildSpawnSpec(mod, port);
-
-  // valida que exista el entrypoint
+  // Validar entrypoint
   if (mod.language === 'node') {
     const entry = path.join(cwd, args.find(a => a.endsWith('.js')) || '');
     if (entry && !(await fs.pathExists(entry))) {
-      throw new Error(`Entrypoint no existe: ${entry} (revisá "cwd" y "args" en manifest.json)`);
+      throw new Error(`Entrypoint no existe: ${entry}`);
     }
   }
 
+  // Crear logs
   const logDir = path.join(mod.dir, '.logs');
   await fs.ensureDir(logDir);
-  const outFile = path.join(logDir, 'out.log');
-  const errFile = path.join(logDir, 'err.log');
-  const outStream = fs.createWriteStream(outFile, { flags: 'a' });
-  const errStream = fs.createWriteStream(errFile, { flags: 'a' });
-
-  // Capturamos buffers en memoria para mensajes de error
-  let outBuf = '', errBuf = '';
-  const cap = (buf, chunk) => {
-    buf += chunk.toString();
-    if (buf.length > 8000) buf = buf.slice(-8000);
-    return buf;
-  };
+  const outStream = fs.createWriteStream(path.join(logDir, 'out.log'), { flags: 'a' });
+  const errStream = fs.createWriteStream(path.join(logDir, 'err.log'), { flags: 'a' });
 
   const useShell = process.platform === 'win32' && !command.includes(path.sep);
-  let spawnErr = null, exited = false, exitCode = null, exitSignal = null;
+  const child = spawn(command, args, { cwd, env, shell: useShell });
+  child.unref();
 
-  const child = spawn(command, args, { cwd, env, stdio: ['ignore','pipe','pipe'], shell: useShell });
-  child.stdout.on('data', d => { outStream.write(d); outBuf = cap(outBuf, d); });
-  child.stderr.on('data', d => { errStream.write(d); errBuf = cap(errBuf, d); });
-  child.on('error', e => { spawnErr = e; });
-  child.once('exit', (code, signal) => { exited = true; exitCode = code; exitSignal = signal; });
+  child.stdout.pipe(outStream);
+  child.stderr.pipe(errStream);
+  child.stdin.on('end', () => {
+    child.kill();
+  });
 
   mod.port = port;
-  mod.pid = child.pid || null;
-  mod.status = 'starting';
-  await saveRegistry();
-
-  const healthy = await waitForHealth(port, mod.healthPath || '/health', 15000, 300);
-
-  if (spawnErr || !healthy || exited) {
-    try { if (child.pid) process.kill(child.pid, 'SIGTERM'); } catch {}
-    mod.status = 'stopped';
-    mod.pid = null;
-    await saveRegistry();
-
-    // tail de logs a mensaje (para entender por qué no llegó al console.log)
-    const tailOut = outBuf || await tailFile(outFile);
-    const tailErr = errBuf || await tailFile(errFile);
-
-    const detail = [
-      spawnErr ? `spawn error: ${spawnErr.message}` : null,
-      exited ? `exit code=${exitCode} signal=${exitSignal}` : null,
-      `HEALTH: http://127.0.0.1:${port}${mod.healthPath || '/health'} → ${healthy ? 'OK' : 'FAIL'}`,
-      tailErr ? `--- STDERR (tail) ---\n${tailErr}` : null,
-      tailOut ? `--- STDOUT (tail) ---\n${tailOut}` : null,
-    ].filter(Boolean).join('\n');
-
-    throw new Error(`No se pudo iniciar el módulo "${slug}".\n${detail}`);
-  }
-
+  mod.pid = child.pid;
   mod.status = 'running';
+  mod.child = child;
+  mod.outStream = outStream;
+  mod.errStream = errStream;
+
   await saveRegistry();
   return mod;
 }
 
+// ============================================================
+// DETENCIÓN DE MÓDULOS
+// ============================================================
+const isWin = process.platform === 'win32';
 
-export async function stopModule(slug) {
-    const mod = registry[slug];
-    if (!mod) throw new Error('Módulo no encontrado');
-    if (mod.status !== 'running' || !mod.pid) return mod;
-    try {
-        process.kill(mod.pid);
-    } catch { }
-    mod.status = 'stopped';
+async function killProcessTree(pid) {
+  if (!pid) return;
+  if (isWin) {
+    await new Promise(res => {
+      const killer = spawn('taskkill', ['/PID', String(pid), '/T', '/F'], { windowsHide: true });
+      killer.on('close', () => res());
+      killer.on('error', () => res());
+    });
+  } else {
+    try { process.kill(pid, 'SIGTERM'); } catch { }
+    await sleep(400);
+    try { process.kill(pid, 'SIGKILL'); } catch { }
+  }
+}
+
+async function closeStreamSafe(stream) {
+  if (!stream) return;
+  try {
+    stream.removeAllListeners?.();
+    stream.unpipe?.();
+    if (stream.end && !stream.writableEnded) await new Promise(r => stream.end(r));
+    if (stream.destroy && !stream.destroyed) stream.destroy();
+    if (typeof stream.close === 'function') try { stream.close(); } catch { }
+  } catch { }
+}
+
+async function waitChildClosed(child, timeoutMs = 2500) {
+  if (!child) return;
+  await Promise.race([once(child, 'close'), new Promise(r => setTimeout(r, timeoutMs))]);
+}
+
+async function rmrfRetry(dir, attempts = 5, delayMs = 300) {
+  if (!dir) return;
+  for (let i = 0; i < attempts; i++) {
+    try { await fs.remove(dir); return; }
+    catch (e) {
+      if (e.code === 'EBUSY' || e.code === 'EPERM') await sleep(delayMs + i * 200);
+      else throw e;
+    }
+  }
+  await fs.remove(dir);
+}
+
+export async function stopModule(slug, { deleteDir = false } = {}) {
+  const mod = registry[slug];
+  if (!mod) throw new Error('Módulo no encontrado');
+  if (mod.status !== 'running' && mod.status !== 'starting') return mod;
+
+  const child = mod.child;
+  const pid = child?.pid;
+
+  try {
+    try { child?.stdin?.write?.('exit\n'); } catch { }
+    try { child?.stdin?.end?.(); } catch { }
+
+    await closeStreamSafe(child?.stdin);
+    await closeStreamSafe(child?.stdout);
+    await closeStreamSafe(child?.stderr);
+    await closeStreamSafe(mod.outStream);
+    await closeStreamSafe(mod.errStream);
+
+    await waitChildClosed(child, 700);
+    if (!child?.killed) await killProcessTree(pid);
+    await waitChildClosed(child, 1500);
+  } catch (e) {
+    console.log('No se pudo matar el proceso:', e?.message || e);
+  } finally {
+    try { child?.removeAllListeners?.(); } catch { }
+    mod.child = null;
     mod.pid = null;
+    mod.outStream = null;
+    mod.errStream = null;
+    mod.status = 'stopped';
     await saveRegistry();
-    return mod;
+  }
+
+  if (deleteDir && mod.dir) {
+    try { await rmrfRetry(mod.dir); }
+    catch (e) { console.error('No se pudo eliminar:', e); }
+  }
+
+  return mod;
 }
 
+// ============================================================
+// DESINSTALACIÓN DE MÓDULOS
+// ============================================================
 export async function uninstallModule(slug) {
-    const mod = registry[slug];
-    if (!mod) throw new Error('Módulo no encontrado');
-    if (mod.pid) await stopModule(slug);
-    // Borrar carpeta
-    await fs.remove(mod.dir);
-    delete registry[slug];
-    await saveRegistry();
-    return true;
+  const mod = registry[slug];
+  if (!mod) throw new Error('Módulo no encontrado');
+  if (mod.pid) await stopModule(slug);
+  await fs.remove(mod.dir);
+  delete registry[slug];
+  await saveRegistry();
+  return true;
 }
 
+// ============================================================
+// UTILIDADES
+// ============================================================
 export function listModules() {
-    return Object.values(registry).sort((a, b) => a.slug.localeCompare(b.slug));
+  return Object.values(registry).sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
 export function getRegistry() { return registry; }
 
-// Busca 'manifest.json' descendiendo si hay una única carpeta a nivel superior.
-// Si no lo encuentra, devuelve la propia carpeta.
+// ============================================================
+// DETECCIÓN DE RAÍZ DE MÓDULO (ZIP)
+// ============================================================
 async function resolveModuleRoot(extractedDir) {
-    // ¿Está en la raíz?
-    if (await fs.pathExists(path.join(extractedDir, 'manifest.json'))) {
-        return extractedDir;
-    }
+  if (await fs.pathExists(path.join(extractedDir, 'manifest.json'))) return extractedDir;
+  const entries = await fs.readdir(extractedDir, { withFileTypes: true });
+  const dirs = entries.filter(e => e.isDirectory());
+  const files = entries.filter(e => e.isFile());
 
-    const entries = await fs.readdir(extractedDir, { withFileTypes: true });
-    const dirs = entries.filter(e => e.isDirectory());
-    const files = entries.filter(e => e.isFile());
+  if (files.length === 0 && dirs.length === 1) {
+    const sub = path.join(extractedDir, dirs[0].name);
+    if (await fs.pathExists(path.join(sub, 'manifest.json'))) return sub;
+  }
 
-    // Caso típico: un solo directorio y ningún archivo -> bajar un nivel
-    if (files.length === 0 && dirs.length === 1) {
-        const sub = path.join(extractedDir, dirs[0].name);
-        if (await fs.pathExists(path.join(sub, 'manifest.json'))) return sub;
+  for (const d of dirs) {
+    const candidate = path.join(extractedDir, d.name);
+    if (await fs.pathExists(path.join(candidate, 'manifest.json'))) return candidate;
+  }
 
-        // Intento extra: un nivel más profundo si también sólo hay una carpeta
-        const subEntries = await fs.readdir(sub, { withFileTypes: true });
-        const subDirs = subEntries.filter(e => e.isDirectory());
-        const subFiles = subEntries.filter(e => e.isFile());
-        if (subFiles.length === 0 && subDirs.length === 1) {
-            const sub2 = path.join(sub, subDirs[0].name);
-            if (await fs.pathExists(path.join(sub2, 'manifest.json'))) return sub2;
-        }
-    }
-
-    // Último intento: búsqueda superficial
-    for (const d of dirs) {
-        const candidate = path.join(extractedDir, d.name);
-        if (await fs.pathExists(path.join(candidate, 'manifest.json'))) return candidate;
-    }
-
-    // Por defecto, devolvé la carpeta tal cual (para heurísticas)
-    return extractedDir;
+  return extractedDir;
 }
-

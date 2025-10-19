@@ -459,6 +459,17 @@
           const sidebarCard = document.querySelector(`.avatar-modulo[data-slug="${CSS?.escape ? CSS.escape(slug) : slug}"]`);
 
           try {
+            // Parar el modulo para poder eliminarlo
+            const resStopModule = await fetch(`/api/modules/${encodeURIComponent(slug)}/stop`, {
+              method: 'POST',
+              headers: { 'Accept': 'application/json' },
+              // credentials: 'include'
+            });
+            if (!resStopModule.ok) {
+              const txt = await resStopModule.text().catch(() => '');
+              throw new Error(txt || (`${resStopModule.status} ${resStopModule.statusText}`));
+            }
+
             const res = await fetch(`/api/modules/${encodeURIComponent(slug)}`, {
               method: 'DELETE',
               headers: { 'Accept': 'application/json' },
