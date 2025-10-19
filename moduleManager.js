@@ -36,6 +36,7 @@ import AdmZip from 'adm-zip';
 import getPort from 'get-port';
 import { nanoid } from 'nanoid';
 import http from 'node:http';
+import { EventEmitter } from 'node:events';
 
 // ============================================================
 // DIRECTORIOS Y RUTAS PRINCIPALES
@@ -243,8 +244,31 @@ async function closeStreamSafe(stream) {
 }
 
 async function waitChildClosed(child, timeoutMs = 2500) {
-  if (!child) return;
-  await Promise.race([once(child, 'close'), new Promise(r => setTimeout(r, timeoutMs))]);
+  if (
+    !child ||
+    !(child instanceof EventEmitter) ||
+    typeof child.once !== 'function' ||
+    typeof child.removeListener !== 'function'
+  ) {
+    await new Promise(r => setTimeout(r, Math.min(timeoutMs, 100)));
+    return;
+  }
+
+  await new Promise(resolve => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(t);
+      try { child.removeListener('close', finish); } catch { }
+      try { child.removeListener('exit', finish); } catch { }
+      resolve();
+    };
+
+    const t = setTimeout(finish, timeoutMs);
+    try { child.once('close', finish); } catch { }
+    try { child.once('exit', finish); } catch { }
+  });
 }
 
 async function rmrfRetry(dir, attempts = 5, delayMs = 300) {
@@ -271,30 +295,43 @@ export async function stopModule(slug, { deleteDir = false } = {}) {
     try { child?.stdin?.write?.('exit\n'); } catch { }
     try { child?.stdin?.end?.(); } catch { }
 
+    // Cerrar/desconectar stdio y logs
     await closeStreamSafe(child?.stdin);
     await closeStreamSafe(child?.stdout);
     await closeStreamSafe(child?.stderr);
     await closeStreamSafe(mod.outStream);
     await closeStreamSafe(mod.errStream);
 
+    // kill del arbol de procesos
     await waitChildClosed(child, 700);
-    if (!child?.killed) await killProcessTree(pid);
+
+    if (child && child.pid && !child.killed) {
+      await killProcessTree(child.pid);  
+    }
+
     await waitChildClosed(child, 1500);
   } catch (e) {
     console.log('No se pudo matar el proceso:', e?.message || e);
   } finally {
-    try { child?.removeAllListeners?.(); } catch { }
+    try {
+      if (child && child instanceof EventEmitter) child.removeAllListeners?.();
+    } catch { }
+
     mod.child = null;
     mod.pid = null;
     mod.outStream = null;
     mod.errStream = null;
+
     mod.status = 'stopped';
     await saveRegistry();
   }
 
   if (deleteDir && mod.dir) {
-    try { await rmrfRetry(mod.dir); }
-    catch (e) { console.error('No se pudo eliminar:', e); }
+    try {
+      await rmrfRetry(mod.dir);
+    } catch (e) {
+      console.error('No se pudo eliminar:', e);
+    }
   }
 
   return mod;
