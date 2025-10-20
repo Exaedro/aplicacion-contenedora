@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <link rel="stylesheet" href="css/auth.css" />
+    <%- include('partials/head.html') %>
+</head>
+
+<body>
+    <main class="auth-shell">
+        <section class="auth-hero">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <h2>Bienvenido</h2>
+                <p>Entrá o creá tu cuenta para continuar.</p>
+            </div>
+        </section>
+
+        <section class="auth-container">
+            <div class="card">
+                <h1 id="form-title">Iniciar sesión</h1>
+
+                <!-- LOGIN -->
+                <form id="login-form" class="form active" novalidate>
+                    <div class="field">
+                        <input id="login-email" name="email" type="email" placeholder="Correo electrónico" required
+                            autocomplete="email" />
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <div class="field">
+                        <div class="password-wrapper">
+                            <input id="login-password" name="password" type="password" placeholder="Contraseña" required
+                                autocomplete="current-password" />
+                            <button type="button" class="toggle-pass" aria-label="Mostrar u ocultar contraseña"
+                                data-target="login-password" title="Mostrar/Ocultar">
+                                <i data-lucide="eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <button class="btn-primary" type="submit">Ingresar</button>
+                    <p class="switch">¿No tenés cuenta?
+                        <a href="#" id="show-register">Registrate</a>
+                    </p>
+                </form>
+
+                <!-- REGISTER -->
+                <form id="register-form" class="form" novalidate>
+                    <div class="field">
+                        <input id="first-name" name="firstName" type="text" placeholder="Nombre" required
+                            autocomplete="given-name" />
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <div class="field">
+                        <input id="last-name" name="lastName" type="text" placeholder="Apellido" required
+                            autocomplete="family-name" />
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <div class="field">
+                        <input id="reg-email" name="email" type="email" placeholder="Correo electrónico" required
+                            autocomplete="email" />
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <div class="field">
+                        <div class="password-wrapper">
+                            <input id="reg-password" name="password" type="password" placeholder="Contraseña" required
+                                autocomplete="new-password" />
+                            <button type="button" class="toggle-pass" aria-label="Mostrar u ocultar contraseña"
+                                data-target="reg-password" title="Mostrar/Ocultar">
+                                <i data-lucide="eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <span class="error" aria-live="polite"></span>
+                    </div>
+
+                    <button class="btn-primary" type="submit">Registrarse</button>
+                    <p class="switch">¿Ya tenés cuenta?
+                        <a href="#" id="show-login">Iniciá sesión</a>
+                    </p>
+                </form>
+
+                <div id="notice" class="notice" role="status" aria-live="polite"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
