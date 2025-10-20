@@ -17,9 +17,27 @@
         <button id="toggleTheme" class="btn btn-ghost btn-icon rounded-full muted-50" aria-label="Cambiar tema">
           <span id="themeIcon" class="icon-20"></span>
         </button>
-        <button class="btn btn-ghost btn-icon rounded-full primary-20" aria-label="Usuario">
+        <div class="user-menu">
+        <button id="userMenuBtn"
+                class="btn btn-ghost btn-icon rounded-full primary-20"
+                aria-label="Usuario"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-controls="userMenu">
           <i data-lucide="user" class="icon-20 primary"></i>
         </button>
+
+        <!-- Menú / dropdown -->
+        <div id="userMenu" class="dropdown-menu auth-menu dropdown-menu--right" role="menu" hidden>
+            <a class="dropdown-item" role="menuitem" href="/profile">
+              <i data-lucide="settings" class="icon-16"></i> Mi perfil
+            </a>
+            <a class="dropdown-item danger" role="menuitem" href="/auth/logout">
+              <i data-lucide="log-out" class="icon-16"></i> Cerrar sesión
+            </a>
+        </div>
+      </div>
+
       </div>
     </header>
 
@@ -243,6 +261,7 @@
 
   </script>
 
+  <script src="js/userMenu.js"></script>
   <script src="js/modulesActions.js"></script>
   <script src="js/topbarToggle.js"></script>
   <script src="js/shell.js"></script>

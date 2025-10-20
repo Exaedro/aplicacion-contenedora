@@ -29,13 +29,23 @@ app.use(express.static(process.cwd() + '/ui/public'));
 // ---------- raíz ----------
 app.get('/', authPageRequired, async (req, res) => {
     const modules = listModules();
+    const user = req.user;
     
-    res.render('index.ejs', { modules, title: 'Aplicación Contenedora' });
+    res.render('index.ejs', { modules, user, title: 'Aplicación Contenedora' });
 });
 
 // ---------- AUTENTIFICACION ----------
 app.get('/auth', (req, res) => {
     res.render('auth', { title: 'Autenticación' });
+});
+
+app.get('/profile', (req, res) => {
+    res.render('profile', { title: 'Perfil' });
+});
+
+app.get('/auth/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/');
 });
 
 // ---------- TESTEO DE CONEXION A LA BASE DE DATOS ----------

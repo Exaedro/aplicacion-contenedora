@@ -960,6 +960,7 @@ main:has(#moduleShell.is-open) {
     padding: 8px 10px;
     border-radius: 8px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .dropdown-item.danger {
@@ -994,3 +995,54 @@ main:has(#moduleShell.is-open) {
 .loading-spinner-gif {
     width: 120px;
 }
+
+
+.user-menu {
+  position: relative;
+}
+
+/* Alinea el menú al borde derecho del botón */
+.dropdown-menu--right {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 260px;
+  z-index: 50; /* por encima del header */
+}
+
+/* Compacto del menú de auth */
+.auth-menu {
+  padding: 12px;
+}
+
+.auth-menu__header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.auth-menu .field { margin-bottom: 10px; }
+
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap .password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+}
+
+.auth-menu__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.danger { color: var(--danger); }
