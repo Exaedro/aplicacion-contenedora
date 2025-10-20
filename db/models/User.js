@@ -35,6 +35,6 @@ User.init(
         sequelize,
         modelName: 'User',
         tableName: 'usuarios', // explícito
-        indexes: [{ unique: true, fields: ['email'] }],
+        //indexes: [{ unique: true, fields: ['email'] }],
     }
 );

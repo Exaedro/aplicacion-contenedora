@@ -3,7 +3,8 @@ const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const title = document.getElementById("form-title");
 const notice = document.getElementById("notice");
-const submitBtn = document.querySelector("button[type='submit']");
+const btnAuthLogin = document.getElementById("btn-auth-login");
+const btnAuthRegister = document.getElementById("btn-auth-register");
 
 document.getElementById("show-register").addEventListener("click", (e) => {
     e.preventDefault();
@@ -119,17 +120,21 @@ loginForm.addEventListener("submit", async (e) => {
     const fields = [...loginForm.querySelectorAll("input")];
     const ok = fields.every(validateField);
     if (ok) {
-        await apiLogin({
+        const user = await apiLogin({
             email: loginForm.email.value,
             contrasena: loginForm.password.value,
-        }, notice).then(({ user }) => {
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 1500);
-        });
+        }, notice)
 
+        if (!user) return;
+
+        btnAuthLogin.disabled = true;
+        btnAuthRegister.disabled = true;
         notice.style.color = "var(--success)";
         notice.textContent = "Inicio de sesión válido ✓";
+
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 1500);
     } else {
         notice.style.color = "var(--danger)";
         notice.textContent = "Revisá los campos marcados en rojo.";
@@ -151,7 +156,8 @@ registerForm.addEventListener("submit", async (e) => {
 
         notice.style.color = "var(--success)";
         notice.textContent = "Registro válido ✓";
-        submitBtn.disabled = true;
+        btnAuthLogin.disabled = true;
+        btnAuthRegister.disabled = true;
 
         setTimeout(() => {
             window.location.href = "/auth";
@@ -194,6 +200,13 @@ async function apiLogin({ email, contrasena }, notice) {
         const err = await res.json().catch(() => ({ error: "Error desconocido" }));
 
         notice.style.color = "var(--danger)";
+
+        // Credenciales invalidas
+        if (res.status == 401) {
+            notice.textContent = "Credenciales inválidas.";
+            return false;
+        }
+
         notice.textContent = "Ocurrió un error al iniciar sesión.";
 
         throw new Error(err.error || "No se pudo iniciar sesión");

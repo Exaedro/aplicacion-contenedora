@@ -17,18 +17,14 @@ export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     port: Number(DB_PORT),
     dialect: DB_DIALECT, // 'mysql'
     logging: DB_LOGGING === 'true' ? console.log : false,
-    timezone: '+00:00', // guarda en UTC; maneja TZ en tu app
+    timezone: '+00:00',
     dialectOptions: {
-        // Para MySQL 8 (caching_sha2_plugin) mysql2 ya soporta; no suele hacer falta tocar esto.
-        // dateStrings evita problemas de TZ; opcional:
         dateStrings: true,
-        // Opcional si tu MySQL requiere SSL local (normalmente no):
-        // ssl: { rejectUnauthorized: false }
     },
     define: {
         underscored: true,
-        paranoid: true,        // soft deletes con deleted_at
-        freezeTableName: false, // usa pluralization por defecto
+        paranoid: true,       
+        freezeTableName: false,
         timestamps: true,
     },
     pool: {

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import { comparePasswords } from "../utils/encrypt.js";
+import { comparePasswords, encryptPassword } from "../utils/encrypt.js";
 import { User } from "../db/models/User.js"; // ajustá el import a tu estructura
 
 const router = Router();
