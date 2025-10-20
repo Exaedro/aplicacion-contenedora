@@ -147,12 +147,14 @@ registerForm.addEventListener("submit", async (e) => {
     const fields = [...registerForm.querySelectorAll("input")];
     const ok = fields.every(validateField);
     if (ok) {
-        await apiRegister({
+        const user = await apiRegister({
             nombres: registerForm.firstName.value,
             apellidos: registerForm.lastName.value,
             email: registerForm.email.value,
             contrasena: registerForm.password.value,
         }, notice)
+
+        if (!user) return;
 
         notice.style.color = "var(--success)";
         notice.textContent = "Registro válido ✓";
@@ -209,7 +211,7 @@ async function apiLogin({ email, contrasena }, notice) {
 
         notice.textContent = "Ocurrió un error al iniciar sesión.";
 
-        throw new Error(err.error || "No se pudo iniciar sesión");
+        throw new Error("No se pudo iniciar sesión");
     }
 
     return res.json();
