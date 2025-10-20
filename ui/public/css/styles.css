@@ -2,13 +2,13 @@
 /* ====== Variables de tema (solo colores) ====== */
 :root {
     /* Base crema suave */
-    --background: #F9F2E8;
+    --background: #fdf9f4;
     /* fondo general */
-    --sidebar: #F4ECE2;
+    --sidebar: #f8efe3;
     /* columna izq. */
-    --card: #FFFBF4;
+    --card: #fbfbfb;
     /* tarjetas/pills */
-    --border: #E8DFD3;
+    --border: #f1e3da;
     /* bordes sutiles */
 
     /* Texto */
@@ -21,13 +21,23 @@
     --primary: #18BDB0;
     --secondary: #18BDB0;
     /* igualado a primary */
-    --accent: #18BDB0;
+    --accent: #3ad1a1;
     /* igualado a primary */
 
     --background-blur: rgba(255, 255, 255, .5);
 
     /* Sombra/anillo muy sutil */
     --ring: rgba(0, 0, 0, .06);
+
+    .btn-primary:hover {
+        background-color: #32b891;
+        box-shadow: 0 2px 8px rgba(58, 209, 161, 0.2);
+    }
+
+    --info: #2CB1EA;
+    --success: #37D69C;
+    --warning: #F0C361;
+    --danger: #EF6A74;
 }
 
 html.dark {
@@ -49,6 +59,11 @@ html.dark {
     --background-blur: rgba(0, 0, 0, .5);
 
     --ring: rgba(255, 255, 255, .08);
+
+    --info: #2CB1EA;
+    --success: #37D69C;
+    --warning: #F0C361;
+    --danger: #EF6A74;
 }
 
 
@@ -123,7 +138,7 @@ body {
     padding: 24px;
     border-bottom: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
     background: color-mix(in oklab, var(--sidebar) 96%, transparent);
-    box-shadow: 0px -7px 20px 0px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .header__title {
@@ -235,6 +250,22 @@ body {
 
 .accent-50 {
     background: color-mix(in oklab, var(--accent) 40%, transparent)
+}
+
+.secondary-60 {
+    background: color-mix(in oklab, var(--secondary) 60%, transparent)
+}
+
+.accent-60 {
+    background: color-mix(in oklab, var(--accent) 60%, transparent)
+}
+
+.secondary-70 {
+    background: color-mix(in oklab, var(--secondary) 70%, transparent)
+}
+
+.accent-70 {
+    background: color-mix(in oklab, var(--accent) 70%, transparent)
 }
 
 .primary {
@@ -838,7 +869,7 @@ main:has(#moduleShell.is-open) {
 .progress-wrap {
     display: grid;
     gap: 8px;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .progress-track {
@@ -970,7 +1001,7 @@ main:has(#moduleShell.is-open) {
     position: absolute;
     top: 36px;
     right: 0;
-    min-width: 160px;
+    min-width: 180px;
     background: var(--card, #fff);
     color: var(--foreground, #111);
     border: 1px solid var(--border, #e2e8f0);
@@ -997,12 +1028,33 @@ main:has(#moduleShell.is-open) {
     cursor: pointer;
 }
 
-.dropdown-item:hover {
-    background: var(--ring, rgba(0, 0, 0, .06));
-}
-
 .dropdown-item.danger {
     color: #d12;
+}
+
+.dropdown-item.danger:hover {
+    background: rgba(255, 0, 21, 0.074);
+}
+
+.dropdown-item.add-favorite {
+    color: var(--warning);
+}
+
+.dropdown-item.add-favorite:hover {
+    background: rgba(240, 195, 97, 0.074);
+}
+
+.dropdown-item.not-interested {
+    color: var(--info);
+}
+
+.dropdown-item.not-interested:hover {
+    background: rgba(44, 177, 234, 0.074);
+}
+
+.dropdown-menu hr {
+    margin: 8px 0;
+    border: 1px solid var(--border);
 }
 
 .loading-spinner-gif {

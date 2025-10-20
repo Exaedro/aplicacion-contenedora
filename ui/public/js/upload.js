@@ -122,8 +122,6 @@
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        progWrap.hidden = false;
-
         const nameOk = form.moduleName.value.trim().length >= 3;
         const fileOk = zipInput.files && zipInput.files[0] && /\.zip$/i.test(zipInput.files[0].name);
         if (!nameOk || !fileOk) { alert('Completá el nombre (mín. 3) y adjuntá un .zip válido.'); return; }

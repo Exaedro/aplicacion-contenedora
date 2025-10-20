@@ -27,6 +27,7 @@
         const toolbar = document.querySelector('.toolbar');
         const modulesGrid = document.getElementById('grid-modules');
         const deletingModule = document.querySelector('.deleting-module');
+        const errorDeletingModule = document.querySelector('.error-deleting-module');
         if (del) {
             const slug = del.dataset.slug;
             if (!slug) return;
@@ -91,7 +92,18 @@
                 sidebarCard?.remove();
                 closeAllMenus();
             } catch (err) {
-                alert('No se pudo eliminar: ' + (err.message || 'Error desconocido'));
+                if (err.message.includes('EBUSY')) {
+                    deletingModule.classList.add('hidden');
+                    errorDeletingModule.classList.remove('hidden');
+
+                    const res = await fetch(`/api/modules/${encodeURIComponent(slug)}/start`, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json' },
+                        // credentials: 'include'
+                    });
+
+                    setTimeout(() => window.location.reload(), 5000);
+                }
                 del.disabled = false;
                 closeAllMenus();
             }

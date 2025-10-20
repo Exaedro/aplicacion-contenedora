@@ -127,6 +127,15 @@
                     </button>
 
                     <div class="dropdown-menu" role="menu" id="menu-<%= m.slug %>" hidden>
+                      <button class="dropdown-item danger add-favorite" role="menuitem" data-slug="<%= m.slug %>">
+                        <i data-lucide="star" class="icon-16"></i>
+                        Agregar a favoritos
+                      </button>
+                      <button class="dropdown-item danger not-interested" role="menuitem" data-slug="<%= m.slug %>">
+                        <i data-lucide="eye-off" class="icon-16"></i>
+                        No me interesa
+                      </button>
+                      <hr>
                       <button class="dropdown-item danger delete-module" role="menuitem" data-slug="<%= m.slug %>">
                         <i data-lucide="trash-2" class="icon-16"></i>
                         Eliminar módulo
@@ -135,7 +144,7 @@
                   </div>
 
                   <!-- Fallback / Abrir -->
-                  <a href="/apps/<%= m.slug %>" class="btn chip secondary-50 open-module"
+                  <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
                     data-slug="<%= m.slug %>">Abrir</a>
                 </div>
               </article>
@@ -170,6 +179,16 @@
                   <img src="img/circle-loading.gif" class="loading-spinner-gif" alt="Cargando..." />
                   <p class="bold">Eliminando módulo...</p>
                   <p>Espera mientras se elimina el módulo. No cierres esta ventana.</p>
+                </div>
+              </div>
+
+              <div class="main-message error-deleting-module hidden">
+                <div>
+                  <img src="img/svg/500-internal-server-error.svg" alt="Error interno del servidor" class="error-icon">
+                </div>
+                <div>
+                  <h2 class="bold">No se pudo eliminar el módulo.</h2>
+                  <p>Ocurrio un error al intentar eliminar el módulo. Por favor, inténtalo de nuevo más tarde.</p>
                 </div>
               </div>
       </main>
