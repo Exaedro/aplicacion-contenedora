@@ -185,6 +185,7 @@
                     //             if (a) a.addEventListener('click', (ev) => { ev.preventDefault(); a.dispatchEvent(new Event('click')); });
                     //             window.lucide && window.lucide.createIcons();
                     //         }
+                    setFlash('Módulo subido exitosamente', 'success');
                     window.location.reload()
                 }
 

@@ -82,9 +82,12 @@
 
                 const modules = MODULES_GRID.getElementsByClassName('card')
                 if (modules.length <= 1) {
+                    setFlash('Módulo eliminado exitosamente', 'success');
                     return window.location.reload();
+
                 }
 
+                showToast('Módulo eliminado exitosamente', 'success');
                 deletingModule.classList.add('hidden'); 
                 toolbar.classList.remove('hidden');
                 modulesGrid.classList.remove('hidden'); 

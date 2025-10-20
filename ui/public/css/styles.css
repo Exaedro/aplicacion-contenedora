@@ -61,7 +61,7 @@ body {
 }
 
 .hidden {
-    display: none!important;
+    display: none !important;
 }
 
 /* ====== Header ====== */
@@ -488,67 +488,71 @@ main:has(#moduleShell.is-open) {
 }
 
 :root {
-  --mod-topbar-h: 59px;   /* ajusta si tu topbar es más alta */
-  --mod-tab-h: 0px;      /* lo que quedará visible cuando esté colapsada */
+    --mod-topbar-h: 59px;
+    /* ajusta si tu topbar es más alta */
+    --mod-tab-h: 0px;
+    /* lo que quedará visible cuando esté colapsada */
 }
 
 /* Asegura el frame respete la altura de la topbar */
 .mod-shell__framewrap {
-  padding-top: var(--mod-topbar-h);
-  transition: padding-top .2s ease;
+    padding-top: var(--mod-topbar-h);
+    transition: padding-top .2s ease;
 }
 
 /* Tirador centrado al borde inferior de la topbar */
 .mod-shell__toggle {
-  position: absolute;
-  left: 50%;
-  bottom: -35px;               /* sobresale un poco del borde */
-  transform: translateX(-50%);
-  min-width: 56px;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  color: var(--foreground);
-  border: 1px solid var(--border, rgba(0,0,0,.08));
-  background: color-mix(in oklab, var(--background-blur) 85%, #000 0%);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0,0,0,.08);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 12px;
-  cursor: pointer;
-  z-index: 1000000;                 /* sobre el contenido */
+    position: absolute;
+    left: 50%;
+    bottom: -35px;
+    /* sobresale un poco del borde */
+    transform: translateX(-50%);
+    min-width: 56px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    color: var(--foreground);
+    border: 1px solid var(--border, rgba(0, 0, 0, .08));
+    background: color-mix(in oklab, var(--background-blur) 85%, #000 0%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 1000000;
+    /* sobre el contenido */
 }
 
 /* Opcional: cambia el cursor al pasar por la pestaña */
 .mod-shell__toggle:hover {
-  filter: brightness(0.98);
+    filter: brightness(0.98);
 }
 
 /* Transición suave al contraer/expandir la barra */
 .mod-shell__topbar {
-  transition: transform .2s ease, box-shadow .2s ease;
-  box-shadow: 0 1px 0 var(--border, rgba(0,0,0,.06));
+    transition: transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 1px 0 var(--border, rgba(0, 0, 0, .06));
 }
 
 /* Estado colapsado del shell: 'esconde' la topbar dejando la pestaña visible */
 .mod-shell.is-collapsed .mod-shell__topbar {
-  transform: translateY(calc(-100% + var(--mod-tab-h)));
+    transform: translateY(calc(-100% + var(--mod-tab-h)));
 }
 
 /* Cuando está colapsado, el frame sube para aprovechar pantalla */
 .mod-shell.is-collapsed .mod-shell__framewrap {
-  padding-top: var(--mod-tab-h);
+    padding-top: var(--mod-tab-h);
 }
 
 /* Gira el icono según estado (up = expandido, down = colapsado) */
 /* No todos los navegadores giran SVGs de lucide con CSS, por eso en JS cambiamos el icono.
    Si quieres efecto extra: */
 .mod-shell.is-collapsed .mod-shell__toggle .icon-14 {
-  transition: transform .2s ease;
-  transform: rotate(180deg);
+    transition: transform .2s ease;
+    transform: rotate(180deg);
 }
 
 .mod-shell__brand {
@@ -998,51 +1002,109 @@ main:has(#moduleShell.is-open) {
 
 
 .user-menu {
-  position: relative;
+    position: relative;
 }
 
 /* Alinea el menú al borde derecho del botón */
 .dropdown-menu--right {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  min-width: 260px;
-  z-index: 50; /* por encima del header */
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 260px;
+    z-index: 50;
+    /* por encima del header */
 }
 
 /* Compacto del menú de auth */
 .auth-menu {
-  padding: 12px;
+    padding: 12px;
 }
 
 .auth-menu__header {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-weight: 600;
-  margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
-.auth-menu .field { margin-bottom: 10px; }
+.auth-menu .field {
+    margin-bottom: 10px;
+}
 
 .password-wrap {
-  position: relative;
+    position: relative;
 }
 
 .password-wrap .password-toggle {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 4px;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px;
 }
 
 .auth-menu__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: space-between;
-  margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    margin-top: 6px;
 }
 
-.danger { color: var(--danger); }
+.danger {
+    color: var(--danger);
+}
+
+/* === Toasts === */
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    opacity: 0;
+    transform: translateY(-10px);
+    cursor: pointer;
+}
+
+.toast i {
+    flex-shrink: 0;
+}
+
+.toast.success {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.toast.error {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.toast.info {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.toast.warning {
+    border-color: #f39c12;
+    color: #f39c12;
+}
