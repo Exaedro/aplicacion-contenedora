@@ -3,6 +3,7 @@
 
 <head>
   <%- include('partials/head.html') %>
+  <title><%= typeof title !== 'undefined' ? title : 'Aplicación Contenedora' %></title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -17,26 +18,27 @@
         <button id="toggleTheme" class="btn btn-ghost btn-icon rounded-full muted-50" aria-label="Cambiar tema">
           <span id="themeIcon" class="icon-20"></span>
         </button>
-        <div class="user-menu">
-        <button id="userMenuBtn"
-                class="btn btn-ghost btn-icon rounded-full primary-20"
-                aria-label="Usuario"
-                aria-haspopup="menu"
-                aria-expanded="false"
-                aria-controls="userMenu">
-          <i data-lucide="user" class="icon-20 primary"></i>
-        </button>
 
-        <!-- Menú / dropdown -->
-        <div id="userMenu" class="dropdown-menu auth-menu dropdown-menu--right" role="menu" hidden>
+        <div class="user-menu">
+          <button id="userMenuBtn"
+                  class="btn btn-ghost btn-icon rounded-full primary-20"
+                  aria-label="Usuario"
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                  aria-controls="userMenu">
+            <i data-lucide="user" class="icon-20 primary"></i>
+          </button>
+
+          <!-- Menú / dropdown -->
+          <div id="userMenu" class="dropdown-menu auth-menu dropdown-menu--right" role="menu" hidden>
             <a class="dropdown-item" role="menuitem" href="/profile">
               <i data-lucide="settings" class="icon-16"></i> Mi perfil
             </a>
             <a class="dropdown-item danger" role="menuitem" href="/auth/logout">
               <i data-lucide="log-out" class="icon-16"></i> Cerrar sesión
             </a>
+          </div>
         </div>
-      </div>
 
       </div>
     </header>
@@ -44,15 +46,25 @@
     <div class="layout">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <% if (typeof modules !=='undefined' ) { %>
-          <% modules.forEach(m=> { %>
-            <a href="/apps/<%= m.slug %>" data-slug="<%= m.slug %>" class="avatar avatar-modulo primary-20 open-module">
-              <span class="avatar__text"><%= m.customName[0].toUpperCase() || m.name[0].toUpperCase() %><%= m.customName[1].toUpperCase() || m.name[1].toUpperCase()%></span>
-            </a>
-            <% }) %>
-              <% } %>
+        <% 
+          // Helper para iniciales
+          function initialsOf(str) {
+            if (!str) return '';
+            const s = String(str).toUpperCase();
+            return (s[0] || '') + (s[1] || '');
+          }
+        %>
 
-                <!-- <div class="avatar secondary-20">
+        <% if (typeof sidebarModules !== 'undefined') { %>
+          <% sidebarModules.forEach(m => { 
+               const label = m.customName || m.custom_name || m.name || m.slug; %>
+            <a href="/apps/<%= m.slug %>" data-slug="<%= m.slug %>" class="avatar avatar-modulo primary-20 open-module">
+              <span class="avatar__text"><%= initialsOf(label) %></span>
+            </a>
+          <% }) %>
+        <% } %>
+
+        <!-- <div class="avatar secondary-20">
           <div class="mini-card secondary"></div>
         </div>
 
@@ -60,9 +72,9 @@
           <i data-lucide="check" class="icon-24 accent"></i>
         </div> -->
 
-                <button class="avatar dashed primary-20" aria-label="Agregar">
-                  <i data-lucide="plus" class="icon-24 primary"></i>
-                </button>
+        <button class="avatar dashed primary-20" aria-label="Agregar">
+          <i data-lucide="plus" class="icon-24 primary"></i>
+        </button>
       </aside>
 
       <!-- Main -->
@@ -96,6 +108,7 @@
               allow="clipboard-read; clipboard-write"></iframe>
           </div>
         </div>
+
         <!-- Search bar -->
         <div class="toolbar">
           <div class="search">
@@ -107,14 +120,68 @@
           </button>
         </div>
 
-        <!-- Grid -->
-        <% if (typeof modules !=='undefined' && modules.length> 0) { %>
+        <!-- =================== FAVORITOS =================== -->
+        <section id="favorites-section" class="favorites-section" <%= (favorites && favorites.length) ? '' : 'hidden' %>>
+          <h2 class="favorites-title">FAVORITOS</h2>
+          <hr class="favorites-hr" />
+          <div class="grid" id="grid-favorites">
+            <% if (Array.isArray(favorites)) { %>
+              <% favorites.forEach(m => { %>
+                <article class="card" data-slug="<%= m.slug %>" data-pref-state="favorito">
+                  <div class="card__content">
+                    <div class="tile secondary-30">
+                      <i data-lucide="calendar" class="icon-32 secondary"></i>
+                    </div>
+
+                    <div>
+                      <h3 class="card__title">
+                        <%= m.customName || m.custom_name || m.name %>
+                      </h3>
+                      <p class="muted small">
+                        <%= m.description %>
+                      </p>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="card__kebab">
+                      <button class="kebab-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más acciones"
+                        data-menu-for="<%= m.slug %>">
+                        <i data-lucide="more-vertical" class="icon-16"></i>
+                      </button>
+
+                      <div class="dropdown-menu" role="menu" id="menu-<%= m.slug %>" hidden>
+                        <button class="dropdown-item danger add-favorite" role="menuitem" data-slug="<%= m.slug %>">
+                          <i data-lucide="star-off" class="icon-16"></i>
+                          Quitar de favoritos
+                        </button>
+                        <button class="dropdown-item danger not-interested" role="menuitem" data-slug="<%= m.slug %>">
+                          <i data-lucide="eye-off" class="icon-16"></i>
+                          No me interesa
+                        </button>
+                        <hr>
+                        <button class="dropdown-item danger delete-module" role="menuitem" data-slug="<%= m.slug %>">
+                          <i data-lucide="trash-2" class="icon-16"></i>
+                          Eliminar módulo
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Fallback / Abrir -->
+                    <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
+                      data-slug="<%= m.slug %>">Abrir</a>
+                  </div>
+                </article>
+              <% }) %>
+            <% } %>
+          </div>
+        </section>
+        <!-- =============== /FAVORITOS ===================== -->
+
+        <!-- =================== NEUTRALES (grid original) =================== -->
+        <% if (typeof all !== 'undefined' && all.length > 0) { %>
           <div class="grid" id="grid-modules">
-            <% modules.forEach(m=> { %>
-
-              <!-- Calendario -->
-
-              <article class="card" data-slug="<%= m.slug %>">
+            <% modules.forEach(m => { %>
+              <article class="card" data-slug="<%= m.slug %>" data-pref-state="neutral">
                 <div class="card__content">
                   <div class="tile secondary-30">
                     <i data-lucide="calendar" class="icon-32 secondary"></i>
@@ -122,7 +189,7 @@
 
                   <div>
                     <h3 class="card__title">
-                      <%= m.customName || m.name %>
+                      <%= m.customName || m.custom_name || m.name %>
                     </h3>
                     <p class="muted small">
                       <%= m.description %>
@@ -158,55 +225,112 @@
                     data-slug="<%= m.slug %>">Abrir</a>
                 </div>
               </article>
-              <% }) %>
-
+            <% }) %>
           </div>
-          <%} else {%>
-            <div class="main-message">
-              <div>
-                <img src="img/svg/no-modules.svg" alt="No hay modulos instalados">
-              </div>
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="lucide lucide-file-text w-16 h-16 text-muted-foreground mx-auto mb-4" aria-hidden="true">
-                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                  <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                  <path d="M10 9H8"></path>
-                  <path d="M16 13H8"></path>
-                  <path d="M16 17H8"></path>
-                </svg>
-                <p class="bold">No hay modulos instalados.</p>
-                <p>Para instalar un módulo ahora, haz click en el botón <strong>+</strong> en la parte superior.</p>
-              </div>
-            </div>
-            <%}%>
-              <div class="main-message deleting-module hidden">
-                <div>
-                  <img src="img/svg/loading.svg" alt="Cargando...">
-                </div>
-                <div>
-                  <img src="img/circle-loading.gif" class="loading-spinner-gif" alt="Cargando..." />
-                  <p class="bold">Eliminando módulo...</p>
-                  <p>Espera mientras se elimina el módulo. No cierres esta ventana.</p>
-                </div>
-              </div>
 
-              <div class="main-message error-deleting-module hidden">
-                <div>
-                  <img src="img/svg/500-internal-server-error.svg" alt="Error interno del servidor" class="error-icon">
-                </div>
-                <div>
-                  <h2 class="bold">No se pudo eliminar el módulo.</h2>
-                  <p>Ocurrio un error al intentar eliminar el módulo. Por favor, inténtalo de nuevo más tarde.</p>
-                </div>
-              </div>
+          <!-- =================== NO ME INTERESA =================== -->
+          <section id="hidden-section" class="hidden-section" <%= (hidden && hidden.length) ? '' : 'hidden' %>>
+            <h2 class="hidden-title">NO ME INTERESA</h2>
+            <hr class="hidden-hr" />
+            <div class="grid" id="grid-hidden">
+              <% if (Array.isArray(hidden)) { %>
+                <% hidden.forEach(m => { %>
+                  <article class="card" data-slug="<%= m.slug %>" data-pref-state="escondido">
+                    <div class="card__content">
+                      <div class="tile secondary-30">
+                        <i data-lucide="calendar" class="icon-32 secondary"></i>
+                      </div>
+
+                      <div>
+                        <h3 class="card__title">
+                          <%= m.customName || m.custom_name || m.name %>
+                        </h3>
+                        <p class="muted small">
+                          <%= m.description %>
+                        </p>
+                      </div>
+
+                      <!-- Acciones -->
+                      <div class="card__kebab">
+                        <button class="kebab-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más acciones"
+                          data-menu-for="<%= m.slug %>">
+                          <i data-lucide="more-vertical" class="icon-16"></i>
+                        </button>
+
+                        <div class="dropdown-menu" role="menu" id="menu-<%= m.slug %>" hidden>
+                          <button class="dropdown-item danger add-favorite" role="menuitem" data-slug="<%= m.slug %>">
+                            <i data-lucide="star" class="icon-16"></i>
+                            Agregar a favoritos
+                          </button>
+                          <button class="dropdown-item danger not-interested" role="menuitem" data-slug="<%= m.slug %>">
+                            <i data-lucide="eye" class="icon-16"></i>
+                            Mostrar en la lista
+                          </button>
+                          <hr>
+                          <button class="dropdown-item danger delete-module" role="menuitem" data-slug="<%= m.slug %>">
+                            <i data-lucide="trash-2" class="icon-16"></i>
+                            Eliminar módulo
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Fallback / Abrir -->
+                      <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
+                        data-slug="<%= m.slug %>">Abrir</a>
+                    </div>
+                  </article>
+                <% }) %>
+              <% } %>
+            </div>
+          </section>
+          <!-- =============== /NO ME INTERESA =================== -->
+
+        <% } else { %>
+          <div class="main-message">
+            <div>
+              <img src="img/svg/no-modules.svg" alt="No hay modulos instalados">
+            </div>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-file-text w-16 h-16 text-muted-foreground mx-auto mb-4" aria-hidden="true">
+                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                <path d="M10 9H8"></path>
+                <path d="M16 13H8"></path>
+                <path d="M16 17H8"></path>
+              </svg>
+              <p class="bold">No hay modulos instalados.</p>
+              <p>Para instalar un módulo ahora, haz click en el botón <strong>+</strong> en la parte superior.</p>
+            </div>
+          </div>
+        <% } %>
+
+        <div class="main-message deleting-module hidden">
+          <div>
+            <img src="img/svg/loading.svg" alt="Cargando...">
+          </div>
+          <div>
+            <img src="img/circle-loading.gif" class="loading-spinner-gif" alt="Cargando..." />
+            <p class="bold">Eliminando módulo...</p>
+            <p>Espera mientras se elimina el módulo. No cierres esta ventana.</p>
+          </div>
+        </div>
+
+        <div class="main-message error-deleting-module hidden">
+          <div>
+            <img src="img/svg/500-internal-server-error.svg" alt="Error interno del servidor" class="error-icon">
+          </div>
+          <div>
+            <h2 class="bold">No se pudo eliminar el módulo.</h2>
+            <p>Ocurrio un error al intentar eliminar el módulo. Por favor, inténtalo de nuevo más tarde.</p>
+          </div>
+        </div>
       </main>
     </div>
   </div>
 
-
-
+  <!-- Modal subir -->
   <div id="uploadModal" class="modal" aria-hidden="true">
     <div class="modal__overlay" data-close></div>
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="uploadTitle"
@@ -250,20 +374,15 @@
     </div>
   </div>
 
-
   <!-- Alertas -->
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-
   <script>
-  // use a script tag or an external JS file
-  document.addEventListener("DOMContentLoaded", (event) => {
-    gsap.registerPlugin(Draggable)
-    
-
-
-  });
-
+    document.addEventListener("DOMContentLoaded", (event) => {
+      if (window.gsap && window.Draggable) {
+        gsap.registerPlugin(Draggable);
+      }
+    });
   </script>
 
   <script src="js/flash.js"></script>

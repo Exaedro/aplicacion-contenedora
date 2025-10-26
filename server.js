@@ -13,6 +13,7 @@ import { authPageRequired, authRequired } from './middlewares/authMiddleware.js'
 import authRouter from './routes/auth.js';
 import modulesRouter from './routes/modules.js';
 import usersRouter from './routes/users.js';
+import { buildModuleListForUser } from './services/modulesWithPrefs.js';
 
 // ---------- PUERTO DEL SERVIDOR ----------
 const PORT = process.env.PORT || 3000;
@@ -28,10 +29,15 @@ app.use(express.static(process.cwd() + '/ui/public'));
 
 // ---------- raíz ----------
 app.get('/', authPageRequired, async (req, res) => {
-    const modules = listModules();
     const user = req.user;
-    
-    res.render('index.ejs', { modules, user, title: 'Aplicación Contenedora' });
+    const modules = await buildModuleListForUser(user.uid);
+
+    const favorites = modules.filter(m => m._pref?.estado === 'favorito');
+    const hidden    = modules.filter(m => m._pref?.estado === 'escondido');
+    const others    = modules.filter(m => m._pref?.estado !== 'favorito' && m._pref?.estado !== 'escondido');
+    const sidebarModules = modules
+
+    res.render('index.ejs', { favorites, modules: others, all: modules, hidden, user, sidebarModules, title: 'Aplicación Contenedora' });
 });
 
 // ---------- AUTENTIFICACION ----------
