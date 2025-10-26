@@ -1108,3 +1108,8 @@ main:has(#moduleShell.is-open) {
     border-color: #f39c12;
     color: #f39c12;
 }
+
+.favorites-section { margin-bottom: 16px; }
+.favorites-title { font-size: 0.9rem; letter-spacing: .08em; color: var(--muted); margin: 8px 0 6px; }
+.favorites-hr { border: 0; border-top: 1px solid var(--border); margin: 0 0 12px; }
+.grid-favorites { margin-top: 8px; }
