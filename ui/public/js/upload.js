@@ -6,6 +6,11 @@
     const dropZone = document.getElementById('zipDrop');   // label for="zipFile"
     const fileNameEl = document.getElementById('fileName');
     const submitBtn = document.getElementById('submitBtn');
+    const moduleNameDiv = document.getElementById('moduleNameDiv');
+    const moduleDescDiv = document.getElementById('moduleDescDiv');
+    const nameSuggestion = document.getElementById('nameSuggestion');
+    const inputModName = document.getElementById('modName');
+    const zipLoadingGif = document.getElementById('zip-loading');
 
     const progWrap = document.getElementById('uploadProgress');
     const bar = document.getElementById('progressBar');
@@ -24,6 +29,7 @@
     function fmtBytes(n) { if (n == null) return '—'; const k = 1024, u = ['B', 'KB', 'MB', 'GB', 'TB']; let i = Math.min(Math.floor(Math.log(Math.max(n, 1)) / Math.log(k)), u.length - 1); return (n / Math.pow(k, i)).toFixed(i ? 1 : 0) + ' ' + u[i]; }
     function fmtETA(loaded, total, elapsed) { if (!total || !loaded) return 'ETA —'; const rate = loaded / (elapsed / 1000); if (!rate) return 'ETA —'; const rem = (total - loaded) / rate; const m = Math.floor(rem / 60), s = Math.round(rem % 60); return `ETA ${m ? m + 'm ' : ''}${s}s`; }
     function resetProgress() { progWrap.hidden = true; bar.style.width = '0%'; bar.setAttribute('aria-valuenow', '0'); pctEl.textContent = '0%'; bytesEl.textContent = '0 / 0'; etaEl.textContent = 'ETA —'; }
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
     function trapFocus(e) {
         if (e.key !== 'Tab') return;
@@ -86,12 +92,59 @@
                 form.reset();
                 fileNameEl.textContent = 'Acepta solo .zip';
                 resetProgress();
+                showInputs(false);
             }
         });
 
         gsap.to(overlay, { autoAlpha: 0, duration: 0.25, ease: 'power2.in' });
     }
+    
     function onKey(e) { if (e.key === 'Escape') closeModal(); }
+
+    function showInputs(bool) {
+        if (bool) {
+            moduleNameDiv.hidden = false;
+            moduleDescDiv.hidden = false;
+            nameSuggestion.hidden = false;
+            return
+        }
+
+        moduleNameDiv.hidden = true;
+        moduleDescDiv.hidden = true;
+        nameSuggestion.hidden = true;
+    }
+
+    async function getNameFromZip(file) {
+        try {
+            zipLoadingGif.hidden = false;
+            submitBtn.disabled = true;
+            showInputs(false);
+            await sleep(1000)
+
+            const zip = await JSZip.loadAsync(file);
+            const entry = zip.file("manifest.json")
+
+            // 1) Buscar manifest.json primero
+
+            if (!entry) {
+                alert("El ZIP no contiene ningún manifest.json. Por favor, adjunta un archivo zip válido.");
+                return false;
+            }
+
+            const text = await entry.async("string");
+            const data = JSON.parse(text);
+
+            zipLoadingGif.hidden = true;
+            submitBtn.disabled = false;
+            showInputs(true);
+            // Obtiene el nombre y lo escribe en el input
+            const name = data.name || "sin nombre"
+            inputModName.value = name;
+            return true
+        } catch (e) {
+            alert('No se pudo leer el archivo zip. Comprueba que el archivo está bien formateado y que no esté corrupto.');
+        }
+    }
 
     // ====== Open/Close wiring
     triggers.forEach(btn => btn.addEventListener('click', openModal));
@@ -105,17 +158,27 @@
     ['dragleave', 'drop'].forEach(ev =>
         dropZone.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('is-dragover'); })
     );
-    dropZone.addEventListener('drop', (e) => {
+    dropZone.addEventListener('drop', async (e) => {
         const file = e.dataTransfer?.files?.[0];
         if (!file) return;
         if (!/\.zip$/i.test(file.name)) { alert('Solo se admite un archivo .zip'); return; }
         const dt = new DataTransfer(); dt.items.add(file);
+        const isValid = await getNameFromZip(file);
+        if (!isValid) return;
+
         zipInput.files = dt.files;
         fileNameEl.textContent = file.name;
+        showInputs(true);
     });
-    zipInput.addEventListener('change', () => {
+    zipInput.addEventListener('change', async () => {
         const f = zipInput.files?.[0];
-        fileNameEl.textContent = f ? f.name : 'Acepta solo .zip';
+        if (!f) return;
+        
+        const isValid = await getNameFromZip(f);
+        if (!isValid) return;
+        
+        fileNameEl.textContent = f.name
+        showInputs(true);
     });
 
     // ====== Submit con progreso (XHR)

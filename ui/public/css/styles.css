@@ -277,11 +277,16 @@ body {
 /* ====== Layout ====== */
 .layout {
     display: flex;
-    height: calc(100dvh - 88.8px);
     overflow: hidden;
+    height: calc(100dvh - 88.8px);
 }
 
+.layout.is-shell-open {
+    height: 100dvh
+} 
+
 .sidebar {
+    position: relative;
     width: 80px;
     padding: 16px;
     display: flex;
@@ -327,6 +332,48 @@ body {
     height: 16px;
     border-radius: 4px;
     background: var(--secondary)
+}
+
+/* Fallback sin JS: barrita en el avatar activo */
+.avatar-modulo.is-active::before {
+  content: "";
+  position: absolute;
+  left: -6px;                /* ajustá si tu sidebar tiene más padding */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 60%;
+  border-radius: 999px;
+  background: var(--primary, #18BDB0);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
+  transition: height .18s ease, opacity .18s ease;
+  opacity: 1;
+}
+
+/* Indicador único (cuando hay JS) */
+.sidebar__indicator {
+  position: absolute;
+  left: -6px;
+  width: 6px;
+  height: 28px;              /* el alto se ajusta por JS si querés */
+  border-radius: 999px;
+  background: var(--primary, #18BDB0);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
+  opacity: 0;
+  transform: translateY(0);
+  transition: transform .18s ease, opacity .15s ease, height .18s ease;
+  pointer-events: none;
+}
+
+/* Avatar módulo base asegurando posicionamiento relativo */
+.avatar.avatar-modulo {
+  position: relative;
+}
+
+/* Accesibilidad visual: resaltá el activo */
+.avatar-modulo.is-active {
+  outline: 0;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary, #18BDB0), transparent 80%);
 }
 
 .main {
@@ -483,7 +530,7 @@ main:has(#moduleShell.is-open) {
     padding-right: 11px;
     padding-left: 11px;
     padding-bottom: 10px;
-    background-color: var(--background-blur);
+    background-color: var(--sidebar);
     backdrop-filter: blur(10px);
 }
 
@@ -637,6 +684,10 @@ main:has(#moduleShell.is-open) {
     border: 0;
     display: block;
     background: #fff;
+}
+
+.mod-shell.is-open .mod-shell__frame {
+    height: calc(100dvh - 59px);
 }
 
 /* Botón cerrar (texto) en pantallas pequeñas */
@@ -1075,7 +1126,7 @@ main:has(#moduleShell.is-open) {
     gap: 8px;
     padding: 10px 14px;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     background: var(--card);
     border: 1px solid var(--border);
@@ -1113,3 +1164,4 @@ main:has(#moduleShell.is-open) {
 .favorites-title { font-size: 0.9rem; letter-spacing: .08em; color: var(--muted); margin: 8px 0 6px; }
 .favorites-hr { border: 0; border-top: 1px solid var(--border); margin: 0 0 12px; }
 .grid-favorites { margin-top: 8px; }
+

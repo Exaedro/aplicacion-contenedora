@@ -58,7 +58,7 @@
         <% if (typeof sidebarModules !== 'undefined') { %>
           <% sidebarModules.forEach(m => { 
                const label = m.customName || m.custom_name || m.name || m.slug; %>
-            <a href="/apps/<%= m.slug %>" data-slug="<%= m.slug %>" class="avatar avatar-modulo primary-20 open-module">
+            <a href="/apps/<%= m.slug %>" data-name="<%= label %>" data-slug="<%= m.slug %>" class="avatar avatar-modulo primary-20 open-module">
               <span class="avatar__text"><%= initialsOf(label) %></span>
             </a>
           <% }) %>
@@ -87,10 +87,10 @@
             <div class="mod-shell__muted" id="modStatus">· cargando…</div>
             <div class="mod-shell__spacer"></div>
 
-            <a id="openNewTab" class="mod-shell__btn" target="_blank" rel="noopener noreferrer">
+            <!-- <a id="openNewTab" class="mod-shell__btn" target="_blank" rel="noopener noreferrer">
               <i data-lucide="external-link" class="icon-16"></i>
               <span class="mod-shell__btn-text">Abrir pestaña</span>
-            </a>
+            </a> -->
             <button id="reloadFrame" class="mod-shell__btn mod-shell__btn--ghost">
               <i data-lucide="refresh-cw" class="icon-16"></i>
               <span class="mod-shell__btn-text">Recargar</span>
@@ -99,9 +99,9 @@
               <i data-lucide="x" class="icon-16"></i>
               <span class="mod-shell__btn-text">Cerrar</span>
             </button>
-            <button id="modShellToggle" class="mod-shell__toggle" aria-expanded="true" aria-label="Contraer barra">
+            <!-- <button id="modShellToggle" class="mod-shell__toggle" aria-expanded="true" aria-label="Contraer barra">
               <i data-lucide="chevron-up" class="icon-14"></i>
-            </button>
+            </button> -->
           </header>
           <div class="mod-shell__framewrap">
             <iframe id="modFrame" class="mod-shell__frame" src="about:blank"
@@ -127,6 +127,7 @@
           <div class="grid" id="grid-favorites">
             <% if (Array.isArray(favorites)) { %>
               <% favorites.forEach(m => { %>
+               <% const label = m.customName || m.custom_name || m.name || m.slug %>
                 <article class="card" data-slug="<%= m.slug %>" data-pref-state="favorito">
                   <div class="card__content">
                     <div class="tile secondary-30">
@@ -135,7 +136,7 @@
 
                     <div>
                       <h3 class="card__title">
-                        <%= m.customName || m.custom_name || m.name %>
+                        <%= label %>
                       </h3>
                       <p class="muted small">
                         <%= m.description %>
@@ -168,7 +169,7 @@
 
                     <!-- Fallback / Abrir -->
                     <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
-                      data-slug="<%= m.slug %>">Abrir</a>
+                      data-slug="<%= m.slug %>" data-name="<%= label %>">Abrir</a>
                   </div>
                 </article>
               <% }) %>
@@ -181,6 +182,7 @@
         <% if (typeof all !== 'undefined' && all.length > 0) { %>
           <div class="grid" id="grid-modules">
             <% modules.forEach(m => { %>
+              <% const label = m.customName || m.custom_name || m.name || m.slug %>
               <article class="card" data-slug="<%= m.slug %>" data-pref-state="neutral">
                 <div class="card__content">
                   <div class="tile secondary-30">
@@ -189,7 +191,7 @@
 
                   <div>
                     <h3 class="card__title">
-                      <%= m.customName || m.custom_name || m.name %>
+                      <%= label %>
                     </h3>
                     <p class="muted small">
                       <%= m.description %>
@@ -222,7 +224,7 @@
 
                   <!-- Fallback / Abrir -->
                   <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
-                    data-slug="<%= m.slug %>">Abrir</a>
+                    data-slug="<%= m.slug %>" data-name="<%= label %>">Abrir</a>
                 </div>
               </article>
             <% }) %>
@@ -235,6 +237,7 @@
             <div class="grid" id="grid-hidden">
               <% if (Array.isArray(hidden)) { %>
                 <% hidden.forEach(m => { %>
+                  <% const label = m.customName || m.custom_name || m.name || m.slug %>
                   <article class="card" data-slug="<%= m.slug %>" data-pref-state="escondido">
                     <div class="card__content">
                       <div class="tile secondary-30">
@@ -243,7 +246,7 @@
 
                       <div>
                         <h3 class="card__title">
-                          <%= m.customName || m.custom_name || m.name %>
+                          <%= label %>
                         </h3>
                         <p class="muted small">
                           <%= m.description %>
@@ -276,7 +279,7 @@
 
                       <!-- Fallback / Abrir -->
                       <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
-                        data-slug="<%= m.slug %>">Abrir</a>
+                        data-slug="<%= m.slug %>" data-name="<%= label %>">Abrir</a>
                     </div>
                   </article>
                 <% }) %>
@@ -342,15 +345,16 @@
       </header>
       <form id="uploadModuleForm" class="modal__body" method="POST" action="/api/modules/install"
         enctype="multipart/form-data" novalidate>
-        <p id="uploadDesc" class="muted small" style="margin-top:-2px;margin-bottom:10px;"> Completá los campos y
-          adjuntá el <strong>.zip</strong> del módulo. </p>
-        <div class="field"> <label for="modName" class="label">Nombre del módulo</label> <input id="modName"
-            name="moduleName" class="input" type="text" placeholder="Ej: gestor-alumnos" minlength="3" required
-            autocomplete="off" />
+        <img src="img/circle-loading.gif" style="display: block;margin: 0 auto;" class="loading-spinner-gif" id="zip-loading" hidden alt="Cargando..." />
+        <p id="nameSuggestion" class="muted small" hidden style="margin-top:-2px;margin-bottom:10px;">Nombre <strong>sugerido</strong> para el módulo.</p>
+        <div class="field" id="moduleNameDiv" hidden> 
+          <label for="modName" class="label">Nombre del módulo</label> 
+          <input id="modName" name="moduleName" class="input" type="text" placeholder="Ej: gestor-alumnos" minlength="3" required autocomplete="off" />
         </div>
-        <div class="field"> <label for="modDesc" class="label">Pequeña descripción</label> <textarea id="modDesc"
-            name="moduleDescription" name="description" class="textarea" maxlength="300"
-            placeholder="Breve resumen (máx. 300 caracteres)"></textarea> </div>
+        <div class="field" id="moduleDescDiv" hidden> 
+          <label for="modDesc" class="label">Pequeña descripción</label> 
+          <textarea id="modDesc" name="moduleDescription" name="description" class="textarea" maxlength="300" placeholder="Breve resumen (máx. 300 caracteres)"></textarea>
+        </div>
         <div class="field"> <label class="label">ZIP del módulo</label>
           <!-- IMPORTANTE: usamos label for="zipFile" para abrir el selector sin JS extra --> <label id="zipDrop"
             class="dropzone" for="zipFile" tabindex="0" aria-controls="zipFile"> <i data-lucide="upload"
@@ -393,6 +397,8 @@
   <script src="js/shell.js"></script>
   <script src="js/upload.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/activeMarker.js"></script>
+  <script src="js/loadTooltips.js"></script>
 </body>
 
 </html>

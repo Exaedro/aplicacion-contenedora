@@ -7,17 +7,19 @@ window.lucide && window.lucide.createIcons();
     const frame = document.getElementById('modFrame');
     const titleEl = document.getElementById('modTitle');
     const statusEl = document.getElementById('modStatus');
-    const btnOpen = document.getElementById('openNewTab');
+    // const btnOpen = document.getElementById('openNewTab');
     const btnReload = document.getElementById('reloadFrame');
     const btnClose = document.getElementById('closeShell');
+    const header = document.querySelector('.header');
+    const layout = document.querySelector('.layout');
 
     function setStatus(msg) { statusEl.textContent = '· ' + msg; }
-    function openShell(slug, deepPath = '', qs = '') {
+    function openShell(slug, deepPath = '', qs = '', name) {
         const path = deepPath ? '/' + deepPath.replace(/^\/+/, '') : '';
         const url = `/modulos/${slug}${path}${qs || ''}`;
         frame.src = url;
-        btnOpen.href = url;
-        titleEl.textContent = slug;
+        //btnOpen.href = url;
+        titleEl.textContent = name || slug;
         setStatus('cargando…');
         shell.classList.add('is-open');
         // Actualizar URL con ?app=slug (sin recargar)
@@ -32,6 +34,8 @@ window.lucide && window.lucide.createIcons();
         const next = new URL(window.location.href);
         next.searchParams.delete('app');
         history.replaceState(null, '', next.toString());
+        header.hidden = false;
+        layout.classList.remove('is-shell-open');
     }
 
     // Wire: botones "Abrir"
@@ -40,7 +44,10 @@ window.lucide && window.lucide.createIcons();
         if (!a) return;
         ev.preventDefault();
         const slug = a.dataset.slug || (a.getAttribute('href').split('/').pop());
-        window.__openShell ? window.__openShell(slug) : (window.location.href = `/apps/${slug}`);
+        const name = a.dataset.name;
+        window.__openShell ? window.__openShell(slug, undefined, undefined, name) : (window.location.href = `/apps/${slug}`);
+        header.hidden = true;
+        layout.classList.add('is-shell-open');
     });
 
 
@@ -48,13 +55,20 @@ window.lucide && window.lucide.createIcons();
     btnReload.addEventListener('click', () => {
         try { frame.contentWindow.location.reload(); } catch (_) { }
     });
-    btnClose.addEventListener('click', closeShell);
+    btnClose.addEventListener('click', () => {
+        closeShell();
+        window.clearActiveModules();
+    });
 
     // Abrir automáticamente si viene ?app=slug
     (function autoOpenFromQuery() {
         const u = new URL(window.location.href);
         const app = u.searchParams.get('app');
-        if (app) openShell(app);
+        if (app) {
+            openShell(app);
+            header.hidden = true;
+            layout.classList.add('is-shell-open');
+        }
     })();
 
     // Bridge opcional (título/altura/estado)
