@@ -17,7 +17,7 @@ import { authPageRequired, authRequired } from './middlewares/authMiddleware.js'
 // import authRouter from './routes/auth.js';
 // import modulesRouter from './routes/modules.js';
 // import usersRouter from './routes/users.js';
-// import { buildModuleListForUser } from './services/modulesWithPrefs.js';
+import { buildModuleListForUser } from './services/modulesWithPrefs.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,12 +46,6 @@ BOOT.uiPaths = {
 // ---------- HEALTH & DIAG ----------
 app.get('/health', (_req, res) => res.status(200).json({ ok: true, t: Date.now() }));
 app.get('/__diag', (_req, res) => res.status(200).json(BOOT));
-
-// ---------- PLACEHOLDERS (por si fallan imports) ----------
-let buildModuleListForUser = async () => {
-  // placeholder para no romper si falla el import real
-  return [];
-};
 
 // ---------- HOME ----------
 app.get('/', authPageRequired, async (req, res, next) => {

@@ -12,9 +12,10 @@ window.lucide && window.lucide.createIcons();
     const btnClose = document.getElementById('closeShell');
     const header = document.querySelector('.header');
     const layout = document.querySelector('.layout');
+    const showInListBtn = document.getElementById('showInListBtn');
 
     function setStatus(msg) { statusEl.textContent = '· ' + msg; }
-    function openShell(slug, deepPath = '', qs = '', name) {
+    function openShell(slug, deepPath = '', qs = '', name, state) {
         const path = deepPath ? '/' + deepPath.replace(/^\/+/, '') : '';
         const url = `/modulos/${slug}${path}${qs || ''}`;
         frame.src = url;
@@ -22,6 +23,9 @@ window.lucide && window.lucide.createIcons();
         titleEl.textContent = name || slug;
         setStatus('cargando…');
         shell.classList.add('is-open');
+        showInListBtn.hidden = state !== 'escondido';
+        showInListBtn.dataset.state = state;
+        showInListBtn.dataset.slug = slug;
         // Actualizar URL con ?app=slug (sin recargar)
         const next = new URL(window.location.href);
         next.searchParams.set('app', slug);
@@ -45,7 +49,8 @@ window.lucide && window.lucide.createIcons();
         ev.preventDefault();
         const slug = a.dataset.slug || (a.getAttribute('href').split('/').pop());
         const name = a.dataset.name;
-        window.__openShell ? window.__openShell(slug, undefined, undefined, name) : (window.location.href = `/apps/${slug}`);
+        const state = a.dataset.state;
+        window.__openShell ? window.__openShell(slug, undefined, undefined, name, state) : (window.location.href = `/apps/${slug}`);
         header.hidden = true;
         layout.classList.add('is-shell-open');
     });
@@ -90,5 +95,27 @@ window.lucide && window.lucide.createIcons();
         setStatus('listo');
         // Handshake opcional
         try { frame.contentWindow.postMessage({ type: 'host-ready', theme: 'dark' }, '*'); } catch (_) { }
+    });
+
+    // Botón "Mostrar en la lista"
+    showInListBtn.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const slug = showInListBtn.dataset.slug;
+        const state = 'neutral'
+
+        const response = await fetch(`/api/users/preferences/modules`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ set: { [slug]: state } }),
+        });
+
+        if (!response.ok) {
+            return showToast('Error al intentar actualizar el estado del módulo', 'error');
+        }
+
+        setFlash('Módulo mostrado en la lista', 'success');
+        window.__closeShell();
+        window.location.reload();
     });
 })();

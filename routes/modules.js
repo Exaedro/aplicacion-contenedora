@@ -14,6 +14,17 @@ router.get('/', (req, res) => {
     res.json({ modules: listModules() });
 });
 
+router.get('/:slug/exists', async (req, res) => {
+    const { slug } = req.params;
+    try {
+        const reg = getRegistry()[slug];
+        if (!reg) return res.status(404).json({ error: 'Módulo no existe' });
+        return res.json({ ok: true });
+    } catch (e) {
+        return res.status(500).json({ error: e.message });
+    }
+});
+
 router.post('/install', upload.single('file'), async (req, res) => {
     const { moduleName, moduleDescription } = req.body;
 

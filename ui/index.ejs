@@ -55,26 +55,85 @@
           }
         %>
 
-        <% if (typeof sidebarModules !== 'undefined') { %>
-          <% sidebarModules.forEach(m => { 
-               const label = m.customName || m.custom_name || m.name || m.slug; %>
-            <a href="/apps/<%= m.slug %>" data-name="<%= label %>" data-slug="<%= m.slug %>" class="avatar avatar-modulo primary-20 open-module">
-              <span class="avatar__text"><%= initialsOf(label) %></span>
-            </a>
-          <% }) %>
-        <% } %>
+          <!-- === Carpetas estilo Discord (mismo look de .avatar) === -->
+          <nav class="sidebar-folders">
 
-        <!-- <div class="avatar secondary-20">
-          <div class="mini-card secondary"></div>
-        </div>
+            <!-- FOLDER: Favoritos (arriba, abierto) -->
+            <section class="folder" id="folder-fav">
+            <button
+              class="avatar avatar-folder primary-60" <%- Array.isArray(favorites) && favorites.length >= 1 ? 'aria-expanded="true"' : 'aria-expanded="false"' %> data-folder="fav">
+              <i data-lucide="star" class="icon-20 primary"></i>
+              </button>
 
-        <div class="avatar accent-20">
-          <i data-lucide="check" class="icon-24 accent"></i>
-        </div> -->
+              <div class="folder__content" data-folder-content="fav" <%- Array.isArray(favorites) && favorites.length >= 1 ? '' : '' %>>
+            <% if (Array.isArray(favorites)) { %>
+              <div class="folder__empty muted small" <%- favorites.length === 0 ? '' : 'hidden' %>>
+                Nada por aquí
+              </div>
+              <% favorites.forEach(m => { 
+                  const label = m.customName || m.custom_name || m.name || m.slug; %>
+                <a href="/apps/<%= m.slug %>" 
+                  class="avatar avatar-modulo primary-20 open-module"
+                  data-name="<%= label %>" 
+                  data-slug="<%= m.slug %>">
+                  <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                </a>
+              <% }) %>
+            <% } else { %>
+              <div class="folder__empty muted small">Nada por aquí</div>
+            <% } %>
+          </div>
 
-        <button class="avatar dashed primary-20" aria-label="Agregar">
-          <i data-lucide="plus" class="icon-24 primary"></i>
-        </button>
+            <!-- FOLDER: Neutrales (medio, abierto) -->
+            <section class="folder" id="folder-neutral">
+              <button class="avatar avatar-folder primary-60" aria-expanded="true" data-folder="neutral">
+                <i data-lucide="layout-grid" class="icon-20 primary"></i>
+              </button>
+
+              <div class="folder__content" data-folder-content="neutral">
+                <% if (Array.isArray(modules) && modules.length) { %>
+                  <% modules.forEach(m => { 
+                      const label = m.customName || m.custom_name || m.name || m.slug; %>
+                    <a href="/apps/<%= m.slug %>" 
+                      class="avatar avatar-modulo primary-20 open-module"
+                      data-name="<%= label %>" data-slug="<%= m.slug %>">
+                      <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                    </a>
+                  <% }) %>
+                <% } else { %>
+                  <div class="folder__empty muted small">Sin módulos neutrales</div>
+                <% } %>
+              </div>
+            </section>
+
+            <!-- FOLDER: No me interesa (abajo, cerrado) -->
+            <section class="folder" id="folder-hidden">
+              <button class="avatar avatar-folder primary-60" aria-expanded="false" data-folder="hidden">
+                <i data-lucide="eye-off" class="icon-20 primary"></i>
+              </button>
+
+              <div class="folder__content" data-folder-content="hidden" hidden>
+                <% if (Array.isArray(hidden) && hidden.length) { %>
+                  <% hidden.forEach(m => { 
+                      const label = m.customName || m.custom_name || m.name || m.slug; %>
+                    <a href="/apps/<%= m.slug %>" 
+                      class="avatar avatar-modulo primary-20 open-module"
+                      data-name="<%= label %>" data-slug="<%= m.slug %>" data-state="escondido">
+                      <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                    </a>
+                  <% }) %>
+                <% } else { %>
+                  <div class="folder__empty muted small">Nada por aquí</div>
+                <% } %>
+              </div>
+            </section>
+
+            <!-- Botón Agregar (dejalo como lo tenías) -->
+            <button class="avatar dashed primary-20" aria-label="Agregar">
+              <i data-lucide="plus" class="icon-24 primary"></i>
+            </button>
+          </nav>
+
       </aside>
 
       <!-- Main -->
@@ -91,6 +150,10 @@
               <i data-lucide="external-link" class="icon-16"></i>
               <span class="mod-shell__btn-text">Abrir pestaña</span>
             </a> -->
+            <a id="showInListBtn" class="mod-shell__btn" hidden>
+              <i data-lucide="eye" class="icon-16"></i>
+              <span class="mod-shell__btn-text">Mostrar en la lista</span>
+            </a> 
             <button id="reloadFrame" class="mod-shell__btn mod-shell__btn--ghost">
               <i data-lucide="refresh-cw" class="icon-16"></i>
               <span class="mod-shell__btn-text">Recargar</span>
@@ -123,12 +186,12 @@
         <!-- =================== FAVORITOS =================== -->
         <section id="favorites-section" class="favorites-section" <%= (favorites && favorites.length) ? '' : 'hidden' %>>
           <h2 class="favorites-title">FAVORITOS</h2>
-          <hr class="favorites-hr" />
+          <hr class="separator-hr" />
           <div class="grid" id="grid-favorites">
             <% if (Array.isArray(favorites)) { %>
               <% favorites.forEach(m => { %>
                <% const label = m.customName || m.custom_name || m.name || m.slug %>
-                <article class="card" data-slug="<%= m.slug %>" data-pref-state="favorito">
+                <article class="card" data-name="<%= label %>" data-slug="<%= m.slug %>" data-pref-state="favorito">
                   <div class="card__content">
                     <div class="tile secondary-30">
                       <i data-lucide="calendar" class="icon-32 secondary"></i>
@@ -178,12 +241,14 @@
         </section>
         <!-- =============== /FAVORITOS ===================== -->
 
+        <hr class="separator-hr" />
+
         <!-- =================== NEUTRALES (grid original) =================== -->
         <% if (typeof all !== 'undefined' && all.length > 0) { %>
           <div class="grid" id="grid-modules">
             <% modules.forEach(m => { %>
               <% const label = m.customName || m.custom_name || m.name || m.slug %>
-              <article class="card" data-slug="<%= m.slug %>" data-pref-state="neutral">
+              <article class="card" data-name="<%= label %>" data-slug="<%= m.slug %>" data-pref-state="neutral">
                 <div class="card__content">
                   <div class="tile secondary-30">
                     <i data-lucide="calendar" class="icon-32 secondary"></i>
@@ -231,14 +296,14 @@
           </div>
 
           <!-- =================== NO ME INTERESA =================== -->
-          <section id="hidden-section" class="hidden-section" <%= (hidden && hidden.length) ? '' : 'hidden' %>>
+          <!-- <section id="hidden-section" class="hidden-section" <%= (hidden && hidden.length) ? '' : 'hidden' %>>
             <h2 class="hidden-title">NO ME INTERESA</h2>
             <hr class="hidden-hr" />
             <div class="grid" id="grid-hidden">
               <% if (Array.isArray(hidden)) { %>
                 <% hidden.forEach(m => { %>
                   <% const label = m.customName || m.custom_name || m.name || m.slug %>
-                  <article class="card" data-slug="<%= m.slug %>" data-pref-state="escondido">
+                  <article class="card" data-name="<%= label %>" data-slug="<%= m.slug %>" data-pref-state="escondido">
                     <div class="card__content">
                       <div class="tile secondary-30">
                         <i data-lucide="calendar" class="icon-32 secondary"></i>
@@ -253,7 +318,7 @@
                         </p>
                       </div>
 
-                      <!-- Acciones -->
+                      Acciones
                       <div class="card__kebab">
                         <button class="kebab-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más acciones"
                           data-menu-for="<%= m.slug %>">
@@ -277,7 +342,7 @@
                         </div>
                       </div>
 
-                      <!-- Fallback / Abrir -->
+                      Fallback / Abrir
                       <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
                         data-slug="<%= m.slug %>" data-name="<%= label %>">Abrir</a>
                     </div>
@@ -285,7 +350,7 @@
                 <% }) %>
               <% } %>
             </div>
-          </section>
+          </section> -->
           <!-- =============== /NO ME INTERESA =================== -->
 
         <% } else { %>
@@ -330,6 +395,54 @@
           </div>
         </div>
       </main>
+    </div>
+  </div>
+
+<div id="confirmDeleteModal" class="modal" aria-hidden="true">
+    <div class="modal__overlay" data-close=""></div>
+
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="confirmDeleteTitle"
+      aria-describedby="confirmDeleteDesc" tabindex="-1">
+      <header class="modal__header">
+        <!-- Ícono -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="trash-2"
+          class="lucide lucide-trash-2 icon-16">
+          <path d="M3 6h18"></path>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+          <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+
+        <div class="modal__title" id="confirmDeleteTitle">Eliminar módulo</div>
+        <div class="modal__spacer"></div>
+
+        <button class="modal__close btn btn-ghost" type="button" data-close="">
+          <!-- X -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x"
+            class="lucide lucide-x icon-16">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+          Cerrar
+        </button>
+      </header>
+
+      <div class="modal__body">
+        <p id="confirmDeleteDesc" class="muted">
+          ¿Estás seguro que quieres eliminar el módulo
+          <strong data-module-name>este módulo</strong>?
+          <br>Esta acción es <strong>irreversible</strong>.
+        </p>
+      </div>
+
+      <div class="modal__footer">
+        <button type="button" class="btn btn-ghost" data-close="">Cancelar</button>
+        <!-- Usa tu estilo de botón primario/rojo según tu tema -->
+        <button type="button" class="btn btn-primary" data-confirm="">Eliminar</button>
+      </div>
     </div>
   </div>
 
@@ -399,6 +512,7 @@
   <script src="js/app.js"></script>
   <script src="js/activeMarker.js"></script>
   <script src="js/loadTooltips.js"></script>
+  <script src="js/sidebarFolders.js"></script>
 </body>
 
 </html>
