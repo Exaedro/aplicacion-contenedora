@@ -170,12 +170,20 @@ body {
     background: color-mix(in oklab, var(--accent) 18%, transparent)
 }
 
+.primary-30 {
+    background: color-mix(in oklab, var(--primary) 26%, transparent)
+}
+
 .secondary-30 {
     background: color-mix(in oklab, var(--secondary) 26%, transparent)
 }
 
 .accent-30 {
     background: color-mix(in oklab, var(--accent) 26%, transparent)
+}
+
+.primary-40 {
+    background: color-mix(in oklab, var(--primary) 32%, transparent)
 }
 
 .secondary-50 {
@@ -186,12 +194,20 @@ body {
     background: color-mix(in oklab, var(--accent) 40%, transparent)
 }
 
+.primary-50 {
+    background: color-mix(in oklab, var(--primary) 40%, transparent)
+}
+
 .secondary-60 {
     background: color-mix(in oklab, var(--secondary) 60%, transparent)
 }
 
 .accent-60 {
     background: color-mix(in oklab, var(--accent) 60%, transparent)
+}
+
+.primary-60 {
+    background: color-mix(in oklab, var(--primary) 56%, transparent)
 }
 
 .secondary-70 {
@@ -283,7 +299,7 @@ body {
 
 .layout.is-shell-open {
     height: 100dvh
-} 
+}
 
 .sidebar {
     position: relative;
@@ -336,44 +352,46 @@ body {
 
 /* Fallback sin JS: barrita en el avatar activo */
 .avatar-modulo.is-active::before {
-  content: "";
-  position: absolute;
-  left: -6px;                /* ajustá si tu sidebar tiene más padding */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 60%;
-  border-radius: 999px;
-  background: var(--primary, #18BDB0);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
-  transition: height .18s ease, opacity .18s ease;
-  opacity: 1;
+    content: "";
+    position: absolute;
+    left: -6px;
+    /* ajustá si tu sidebar tiene más padding */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 60%;
+    border-radius: 999px;
+    background: var(--primary, #18BDB0);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
+    transition: height .18s ease, opacity .18s ease;
+    opacity: 1;
 }
 
 /* Indicador único (cuando hay JS) */
 .sidebar__indicator {
-  position: absolute;
-  left: -6px;
-  width: 6px;
-  height: 28px;              /* el alto se ajusta por JS si querés */
-  border-radius: 999px;
-  background: var(--primary, #18BDB0);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
-  opacity: 0;
-  transform: translateY(0);
-  transition: transform .18s ease, opacity .15s ease, height .18s ease;
-  pointer-events: none;
+    position: absolute;
+    left: -6px;
+    width: 6px;
+    height: 28px;
+    /* el alto se ajusta por JS si querés */
+    border-radius: 999px;
+    background: var(--primary, #18BDB0);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--primary, #18BDB0), transparent 70%);
+    opacity: 0;
+    transform: translateY(0);
+    transition: transform .18s ease, opacity .15s ease, height .18s ease;
+    pointer-events: none;
 }
 
 /* Avatar módulo base asegurando posicionamiento relativo */
 .avatar.avatar-modulo {
-  position: relative;
+    position: relative;
 }
 
 /* Accesibilidad visual: resaltá el activo */
 .avatar-modulo.is-active {
-  outline: 0;
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary, #18BDB0), transparent 80%);
+    outline: 0;
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary, #18BDB0), transparent 80%);
 }
 
 .main {
@@ -395,7 +413,8 @@ main:has(#moduleShell.is-open) {
 }
 
 #moduleShell.is-open~.toolbar,
-#moduleShell.is-open~.grid {
+#moduleShell.is-open~.grid,
+#moduleShell.is-open~.favorites-section {
     display: none;
 }
 
@@ -1160,8 +1179,52 @@ main:has(#moduleShell.is-open) {
     color: #f39c12;
 }
 
-.favorites-section { margin-bottom: 16px; }
-.favorites-title { font-size: 0.9rem; letter-spacing: .08em; color: var(--muted); margin: 8px 0 6px; }
-.favorites-hr { border: 0; border-top: 1px solid var(--border); margin: 0 0 12px; }
-.grid-favorites { margin-top: 8px; }
+.favorites-section {
+    margin-bottom: 16px;
+}
 
+.favorites-title {
+    font-size: 0.9rem;
+    letter-spacing: .08em;
+    color: var(--muted);
+    margin: 8px 0 6px;
+}
+
+.separator-hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 0 0 24px;
+}
+
+.grid-favorites {
+    margin-top: 8px;
+}
+
+.sidebar-folders {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+}
+
+.avatar-folder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.avatar-folder .caret {
+    margin-left: auto;
+    opacity: .8;
+}
+
+.folder__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .4rem;
+    margin: .5rem 0;
+}
