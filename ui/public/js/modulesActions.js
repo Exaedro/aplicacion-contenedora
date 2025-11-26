@@ -207,11 +207,13 @@ async function deleteModuleAction(btn) {
 
                 const ok = await request(`/${slug}`, { method: 'DELETE' })
                 if (!ok) {
-                    console.log(ok)
-                    throw new Error('No se pudo eliminar el módulo')
-                }
 
-                showToast('Módulo eliminado exitosamente', 'success')
+                    console.log(ok)
+
+                }
+                console.log(ok)
+                setFlash('Módulo eliminado exitosamente', 'success')
+                window.location.reload()
             } catch(e) {
                 showToast('No se pudo eliminar el módulo', 'error')
             }
@@ -326,7 +328,7 @@ async function request(endpoint, { method = 'GET', body, credentials = 'include'
         credentials,
         body: JSON.stringify(body),
     });
-    if (!res.ok) return undefined
+
     return res.json();
 }
 

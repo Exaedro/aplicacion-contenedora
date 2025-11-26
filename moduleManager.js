@@ -82,12 +82,12 @@ function slugify(s) {
     .replace(/^-+|-+$/g, '') || `mod-${nanoid(6)}`;
 }
 
-async function loadRegistry() {
+export async function loadRegistry() {
   try { return JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf8')); }
   catch { return {}; }
 }
 
-async function saveRegistry() {
+export async function saveRegistry() {
   await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
 }
 
@@ -177,6 +177,10 @@ export async function startModule(slug) {
   const cwd = path.join(mod.dir, mod.cwd || '.');
   const command = mod.start === 'node' ? process.execPath : mod.start;
 
+  if (mod.status == 'deleted') {
+    return
+  }
+  
   // Validar entrypoint
   if (mod.language === 'node') {
     const entry = path.join(cwd, args.find(a => a.endsWith('.js')) || '');

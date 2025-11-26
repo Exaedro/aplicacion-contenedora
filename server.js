@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import cors from 'cors';
 
 // Local utils (seguimos asumiendo que existen)
 import { listModules, getRegistry } from './moduleManager.js';
@@ -33,9 +34,18 @@ const BOOT = {
 // ---------- CONFIG BÁSICA ----------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'ui'));
-app.use(express.json());
+app.use('/api', express.json());
+app.use('/api', express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'ui', 'public')));
+app.use(cors(
+  {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }
+));
 
 // Guarda info de rutas para diagnóstico
 BOOT.uiPaths = {
@@ -141,7 +151,9 @@ app.use(
     target: 'http://127.0.0.1:65535', // dummy
     changeOrigin: true,
     ws: true,
-    logLevel: 'warn',
+    logLevel: 'debug',
+    proxyTimeout: 20000,
+    timeout: 25000,
     router: (req) => req._target,
     pathRewrite: (pathStr) => {
       const rewritten = pathStr.replace(/^\/modulos\/[^/]+/, '');

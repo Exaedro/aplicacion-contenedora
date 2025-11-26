@@ -1009,7 +1009,7 @@ main:has(#moduleShell.is-open) {
     position: absolute;
     top: 36px;
     right: 0;
-    min-width: 180px;
+    min-width: 181px;
     background: var(--card, #fff);
     color: var(--foreground, #111);
     border: 1px solid var(--border, #e2e8f0);
@@ -1035,6 +1035,7 @@ main:has(#moduleShell.is-open) {
     border-radius: 8px;
     cursor: pointer;
     text-decoration: none;
+    font-weight: 600;
 }
 
 .dropdown-item.danger {

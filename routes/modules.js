@@ -68,8 +68,8 @@ router.delete('/:slug', async (req, res) => {
         try { await stopModule(slug); } catch { /* ignoramos si ya estaba parado */ }
 
         // 2) Pequeña espera para que Windows suelte locks de archivos
-        await sleep(350);
-
+        await sleep(500);
+    
         // 3) Borrado robusto del directorio del módulo
         await removeDirWithRetries(reg.dir);
 
@@ -84,6 +84,7 @@ router.delete('/:slug', async (req, res) => {
                 console.error('uninstallModule falló:', e);
                 throw e;
             }
+            
             // ENOENT es normal si ya no existe el dir
             // de todos modos quitamos del registry por si no lo hizo
             const regAll = getRegistry();
@@ -92,6 +93,7 @@ router.delete('/:slug', async (req, res) => {
 
         return res.json({ ok: true });
     } catch (e) {
+        console.log(e)
         return res.status(500).json({ error: e.message || String(e) });
     }
 });
