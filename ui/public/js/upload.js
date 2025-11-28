@@ -127,6 +127,8 @@
             // 1) Buscar manifest.json primero
 
             if (!entry) {
+                zipLoadingGif.hidden = true;
+                submitBtn.disabled = false;
                 alert("El ZIP no contiene ningún manifest.json. Por favor, adjunta un archivo zip válido.");
                 return false;
             }

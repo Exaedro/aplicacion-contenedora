@@ -1,6 +1,6 @@
 import fsp from "node:fs/promises";
 import { sleep } from "./sleep.js";
-import { getRegistry, saveRegistry } from "../moduleManager.js";
+import { loadRegistry, forceSaveRegistry } from "../moduleManager.js";
 
 export default async function removeDirWithRetries(dir, tries = 6, delayMs = 200) {
     for (let i = 0; i < tries; i++) {
@@ -18,11 +18,13 @@ export default async function removeDirWithRetries(dir, tries = 6, delayMs = 200
                 const newName = dir + '-deleted.lock'
                 try {
                     
-                    const registry = await getRegistry();
+                    const loadedRegistry = await loadRegistry();
+                    const registry = Array.from(Object.values(loadedRegistry));
+
                     const mod = registry.find(m => m.dir === dir);
                     if (mod) {
                         mod.status = 'deleted';
-                        await saveRegistry();
+                        await forceSaveRegistry(registry);
                         await fsp.rename(dir, newName)
                     }
 

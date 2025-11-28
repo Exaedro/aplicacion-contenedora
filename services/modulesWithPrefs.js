@@ -6,10 +6,8 @@ export async function buildModuleListForUser(userId) {
     const prefs = await ModulePreference.findAll({ where: { usuario_id: userId } });
 
     const prefMap = new Map(prefs.map(p => [p.modulo_nombre, p]));
-    const favorites = [];
-    const neutrals = [];
-
-    console.log(prefMap)
+    let favorites = [];
+    let neutrals = [];
 
     for (const mod of modules) {
         const pref = prefMap.get(mod.slug);

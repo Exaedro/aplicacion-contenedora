@@ -2,6 +2,7 @@
 const GRID_NEUTRALS = document.getElementById('grid-modules');
 const TOOLBAR = document.querySelector('.toolbar');
 const DELETING_MODULE = document.querySelector('.deleting-module');
+const DELETING_MODAL = document.getElementById('confirmDeleteModal')
 
 const FAVORITES_SECTION = document.getElementById('favorites-section');
 const GRID_FAVORITES = document.getElementById('grid-favorites');
@@ -40,9 +41,7 @@ function setModuleState({ slug, state }) {
             GRID_FAVORITES.appendChild(card);
 
             // Ocultar mensaje de vacio en el sidebar
-            if (FOLDER_FAV.children.length >= 1) {
-                FOLDER_FAV_EMPTY.hidden = true;
-            }
+            reloadFolders()
 
             // Cambios para el estado de la carta del main
             addFavoriteBtn.innerHTML = `<i data-lucide="star-off" class="icon-16"></i> Quitar de favoritos`
@@ -53,10 +52,12 @@ function setModuleState({ slug, state }) {
             FOLDER_HIDDEN.appendChild(avatar);
             avatar.dataset.state = 'escondido'
 
-            // Ocultar mensaje de vacio en el sidebar
-            if (FOLDER_HIDDEN.children.length >= 1) {
-                FOLDER_HIDDEN_EMPTY.hidden = true;
+            if(GRID_FAVORITES.children.length < 1) {
+                FAVORITES_SECTION.hidden = true;
             }
+
+             // Ocultar mensaje de vacio en el sidebar
+            reloadFolders()
 
             card.hidden = true;
             break;
@@ -72,9 +73,7 @@ function setModuleState({ slug, state }) {
             addFavoriteBtn.innerHTML = `<i data-lucide="star" class="icon-16"></i> Agregar a favoritos`
 
             // Ocultar mensaje de vacio en el sidebar
-            if (FOLDER_FAV.children.length <= 1) {
-                FOLDER_FAV_EMPTY.hidden = false;
-            }
+            reloadFolders()
 
             const favoriteModulesLength = GRID_FAVORITES.children.length
             if (favoriteModulesLength <= 0) {
@@ -85,7 +84,29 @@ function setModuleState({ slug, state }) {
     }
 }
 
+function reloadFolders() {
+    if (FOLDER_FAV.children.length >= 2) {
+        FOLDER_FAV_EMPTY.hidden = true;
+    }
+    if (FOLDER_NEUTRAL.children.length >= 2) {
+        FOLDER_NEUTRAL_EMPTY.hidden = true;
+    }
 
+    if (FOLDER_HIDDEN.children.length >= 2) {
+        FOLDER_HIDDEN_EMPTY.hidden = true;
+    }
+
+    if (FOLDER_FAV.children.length < 2) {
+        FOLDER_FAV_EMPTY.hidden = false;
+    }
+    if (FOLDER_NEUTRAL.children.length < 2) {
+        FOLDER_NEUTRAL_EMPTY.hidden = false;
+    }
+
+    if (FOLDER_HIDDEN.children.length < 2) {
+        FOLDER_HIDDEN_EMPTY.hidden = false;
+    }
+}
 
 function configurationMenus() {
     const modulesSettings = document.querySelectorAll('.kebab-btn');
@@ -175,7 +196,7 @@ function notInterestedAction(btn) {
 
         return;
     })
-} 
+}
 
 async function deleteModuleAction(btn) {
     btn.addEventListener('click', async () => {
@@ -190,34 +211,40 @@ async function deleteModuleAction(btn) {
         const ok = await moduleExists(slug)
         if (!ok) showToast('Este módulo no existe más', 'error')
 
-        confirmDeleteModal.open({ 
-            moduleName: card.dataset.name, 
+        confirmDeleteModal.open({
+            moduleName: card.dataset.name,
             onConfirm: async () => {
-            try {
-                GRID_NEUTRALS.classList.add('hidden')
-                FAVORITES_SECTION.classList.add('hidden')
-                TOOLBAR.hidden = true
-                DELETING_MODULE.classList.remove('hidden')
+                try {
+                    GRID_NEUTRALS.classList.add('hidden')
+                    FAVORITES_SECTION.classList.add('hidden')
+                    TOOLBAR.hidden = true
+                    DELETING_MODULE.classList.remove('hidden')
+                    DELETING_MODAL.classList.remove('is-open')
 
-                const stopped = await request(`/${slug}/stop`, { method: 'POST' })
-                if (!stopped) {
-                    console.log(stopped)
-                    throw new Error('No se pudo detener el módulo')
-                }
+                    const stopped = await request(`/${slug}/stop`, { method: 'POST' })
+                    if (!stopped) {
+                        console.log(stopped)
 
-                const ok = await request(`/${slug}`, { method: 'DELETE' })
-                if (!ok) {
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 2000)
+                        throw new Error('No se pudo detener el módulo')
+                    }
 
+                    const ok = await request(`/${slug}`, { method: 'DELETE' })
+                    if (!ok) {
+
+                        console.log(ok)
+
+                    }
                     console.log(ok)
-
+                    setFlash('Módulo eliminado exitosamente', 'success')
+                    window.location.reload()
+                } catch (e) {
+                    showToast('No se pudo eliminar el módulo', 'error')
                 }
-                console.log(ok)
-                setFlash('Módulo eliminado exitosamente', 'success')
-                window.location.reload()
-            } catch(e) {
-                showToast('No se pudo eliminar el módulo', 'error')
             }
-        }})
+        })
     });
 
     async function moduleExists(slug) {

@@ -180,7 +180,7 @@ app.use((err, _req, res, _next) => {
   const status = err.status || 500;
   // Evitar romper si falta views/error.ejs
   try {
-    res.status(status).render('error', {
+    res.status(status).json({
       title: 'Error',
       status,
       message: err.message || 'Error interno'
@@ -262,9 +262,6 @@ async function initRoutersDynamically() {
 
   try {
     const svc = await import('./services/modulesWithPrefs.js');
-    if (typeof svc.buildModuleListForUser === 'function') {
-      buildModuleListForUser = svc.buildModuleListForUser;
-    }
   } catch (e) {
     console.error('[BOOT] No se pudo cargar services/modulesWithPrefs:', e?.message || e);
   }

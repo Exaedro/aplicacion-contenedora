@@ -91,6 +91,10 @@ export async function saveRegistry() {
   await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
 }
 
+export async function forceSaveRegistry(newRegistry) {
+  await fs.writeFile(REGISTRY_FILE, JSON.stringify(newRegistry, null, 2));
+}
+
 function detectDefaults(moduleDir) {
   const hasPkg = fs.existsSync(path.join(moduleDir, 'package.json'));
   const hasServerJs = fs.existsSync(path.join(moduleDir, 'server.js'));

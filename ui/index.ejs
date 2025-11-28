@@ -91,7 +91,8 @@
               </button>
 
               <div class="folder__content" data-folder-content="neutral">
-                <% if (Array.isArray(modules) && modules.length) { %>
+                <% if (Array.isArray(modules)) { %>
+                  <div class="folder__empty muted small" <%- modules.length < 1 ? '' : 'hidden' %>>Nada por aquí</div>
                   <% modules.forEach(m => { 
                       const label = m.customName || m.custom_name || m.name || m.slug; %>
                     <a href="/apps/<%= m.slug %>" 
@@ -100,8 +101,6 @@
                       <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
                     </a>
                   <% }) %>
-                <% } else { %>
-                  <div class="folder__empty muted small">Nada por aquí</div>
                 <% } %>
               </div>
             </section>
@@ -113,7 +112,8 @@
               </button>
 
               <div class="folder__content" data-folder-content="hidden" hidden>
-                <% if (Array.isArray(hidden) && hidden.length) { %>
+                <% if (Array.isArray(hidden)) { %>
+                  <div class="folder__empty muted small" <%- hidden.length < 1 ? '' : 'hidden' %>>Nada por aquí</div>
                   <% hidden.forEach(m => { 
                       const label = m.customName || m.custom_name || m.name || m.slug; %>
                     <a href="/apps/<%= m.slug %>" 
@@ -122,8 +122,6 @@
                       <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
                     </a>
                   <% }) %>
-                <% } else { %>
-                  <div class="folder__empty muted small">Nada por aquí</div>
                 <% } %>
               </div>
             </section>
@@ -294,64 +292,6 @@
               </article>
             <% }) %>
           </div>
-
-          <!-- =================== NO ME INTERESA =================== -->
-          <!-- <section id="hidden-section" class="hidden-section" <%= (hidden && hidden.length) ? '' : 'hidden' %>>
-            <h2 class="hidden-title">NO ME INTERESA</h2>
-            <hr class="hidden-hr" />
-            <div class="grid" id="grid-hidden">
-              <% if (Array.isArray(hidden)) { %>
-                <% hidden.forEach(m => { %>
-                  <% const label = m.customName || m.custom_name || m.name || m.slug %>
-                  <article class="card" data-name="<%= label %>" data-slug="<%= m.slug %>" data-pref-state="escondido">
-                    <div class="card__content">
-                      <div class="tile secondary-30">
-                        <i data-lucide="calendar" class="icon-32 secondary"></i>
-                      </div>
-
-                      <div>
-                        <h3 class="card__title">
-                          <%= label %>
-                        </h3>
-                        <p class="muted small">
-                          <%= m.description %>
-                        </p>
-                      </div>
-
-                      Acciones
-                      <div class="card__kebab">
-                        <button class="kebab-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Más acciones"
-                          data-menu-for="<%= m.slug %>">
-                          <i data-lucide="more-vertical" class="icon-16"></i>
-                        </button>
-
-                        <div class="dropdown-menu" role="menu" id="menu-<%= m.slug %>" hidden>
-                          <button class="dropdown-item danger add-favorite" role="menuitem" data-slug="<%= m.slug %>">
-                            <i data-lucide="star" class="icon-16"></i>
-                            Agregar a favoritos
-                          </button>
-                          <button class="dropdown-item danger not-interested" role="menuitem" data-slug="<%= m.slug %>">
-                            <i data-lucide="eye" class="icon-16"></i>
-                            Mostrar en la lista
-                          </button>
-                          <hr>
-                          <button class="dropdown-item danger delete-module" role="menuitem" data-slug="<%= m.slug %>">
-                            <i data-lucide="trash-2" class="icon-16"></i>
-                            Eliminar módulo
-                          </button>
-                        </div>
-                      </div>
-
-                      Fallback / Abrir
-                      <a href="/apps/<%= m.slug %>" class="btn chip secondary-70 open-module"
-                        data-slug="<%= m.slug %>" data-name="<%= label %>">Abrir</a>
-                    </div>
-                  </article>
-                <% }) %>
-              <% } %>
-            </div>
-          </section> -->
-          <!-- =============== /NO ME INTERESA =================== -->
 
         <% } else { %>
           <div class="main-message">
