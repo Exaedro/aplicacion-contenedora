@@ -26,9 +26,9 @@ User.init(
             allowNull: false,
         },
         rol: {
-            type: DataTypes.ENUM('admin', 'user'),
+            type: DataTypes.ENUM('preceptor', 'profesor', 'alumno', 'admin'),
             allowNull: false,
-            defaultValue: 'user',
+            defaultValue: 'alumno',
         }
     },
     {

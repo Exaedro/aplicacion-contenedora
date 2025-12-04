@@ -8,6 +8,9 @@ import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import cors from 'cors';
 
+// modulo de gestion de usuarios para administradores
+import appGestorUsuarios from './exec/modulo-gestor-usuarios/server.js';
+
 // Local utils (seguimos asumiendo que existen)
 import { listModules, getRegistry } from './moduleManager.js';
 import { testConnection, sequelize } from './db/index.js';

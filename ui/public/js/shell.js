@@ -13,9 +13,15 @@ window.lucide && window.lucide.createIcons();
     const header = document.querySelector('.header');
     const layout = document.querySelector('.layout');
     const showInListBtn = document.getElementById('showInListBtn');
+    const mainMessage = document.querySelector('.main-message');    
 
     function setStatus(msg) { statusEl.textContent = '· ' + msg; }
     function openShell(slug, deepPath = '', qs = '', name, state) {
+        if (slug === 'gestor-de-usuarios') {
+            openShellWithUrl('http://localhost:3001/', 'Gestor de usuarios');
+            return;
+        }
+
         const path = deepPath ? '/' + deepPath.replace(/^\/+/, '') : '';
         const url = `/modulos/${slug}${path}${qs || ''}`;
         frame.src = url;
@@ -31,6 +37,22 @@ window.lucide && window.lucide.createIcons();
         next.searchParams.set('app', slug);
         history.replaceState(null, '', next.toString());
     }
+
+    function openShellWithUrl(url, name) {
+        frame.src = url;
+        //btnOpen.href = url;
+        titleEl.textContent = name;
+        setStatus('cargando…');
+        shell.classList.add('is-open');
+        header.hidden = true;
+        layout.classList.add('is-shell-open');
+        mainMessage.classList.add('hidden');
+        // Actualizar URL con ?app=slug (sin recargar)
+        const next = new URL(window.location.href);
+        next.searchParams.set('app', name.toLowerCase().replace(/\s+/g, '-'));
+        history.replaceState(null, '', next.toString());
+    }
+
     function closeShell() {
         shell.classList.remove('is-open');
         frame.src = 'about:blank';
@@ -40,6 +62,7 @@ window.lucide && window.lucide.createIcons();
         history.replaceState(null, '', next.toString());
         header.hidden = false;
         layout.classList.remove('is-shell-open');
+        mainMessage.classList.remove('hidden');
     }
 
     // Wire: botones "Abrir"
@@ -89,6 +112,7 @@ window.lucide && window.lucide.createIcons();
     });
 
     window.__openShell = openShell;
+    window.__openShellWithUrl = openShellWithUrl;
     window.__closeShell = closeShell;
 
     frame.addEventListener('load', () => {

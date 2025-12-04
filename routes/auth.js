@@ -60,8 +60,9 @@ router.post("/login", async (req, res) => {
             return res.status(500).json({ error: "Falta configurar JWT_SECRET." });
         }
 
+        console.log(user)
         const token = jwt.sign(
-            { uid: user.id, email: user.email, role: user.role || "user" },
+            { uid: user.id, email: user.email, role: user.rol || "user" },
             JWT_SECRET,
             { expiresIn: "7d" }
         );

@@ -15,9 +15,9 @@
         <h1 class="header__title">Aplicaciones</h1>
       </div>
       <div class="header__right">
-        <button id="toggleTheme" class="btn btn-ghost btn-icon rounded-full muted-50" aria-label="Cambiar tema">
+        <!-- <button id="toggleTheme" class="btn btn-ghost btn-icon rounded-full muted-50" aria-label="Cambiar tema">
           <span id="themeIcon" class="icon-20"></span>
-        </button>
+        </button> -->
 
         <div class="user-menu">
           <button id="userMenuBtn"
@@ -28,7 +28,7 @@
                   aria-controls="userMenu">
             <i data-lucide="user" class="icon-60 primary"></i>
           </button>
-
+          
           <!-- Menú / dropdown -->
           <div id="userMenu" class="dropdown-menu auth-menu dropdown-menu--right" role="menu" hidden>
             <!-- <a class="dropdown-item" role="menuitem" href="/profile">
@@ -37,6 +37,13 @@
             <a class="dropdown-item danger" role="menuitem" href="/auth/logout">
               <i data-lucide="log-out" class="icon-16"></i> Cerrar sesión
             </a>
+            <% if (user.role == 'admin') { %>
+            <hr>
+            <span class="muted small admin-title">ADMINISTRADOR</span>
+            <a class="dropdown-item gestor-usuarios" role="menuitem" onclick="window.__openShellWithUrl('http://localhost:3001/', 'Gestor de Usuarios');">
+              <i data-lucide="users" class="icon-16"></i> Gestor de usuarios
+            </a>
+            <% } %>
           </div>
         </div>
 
@@ -440,6 +447,10 @@
         gsap.registerPlugin(Draggable);
       }
     });
+  </script>
+
+  <script>
+    
   </script>
 
   <script src="js/flash.js"></script>
