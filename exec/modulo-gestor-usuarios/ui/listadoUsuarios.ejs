@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #1e40af;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #1e40af;
+            font-size: 1.1rem;
+        }
+
+        .spinner {
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8fafc;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        th {
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 20px 24px;
+            color: #475569;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+
+        .role-admin {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .role-profesor {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .role-alumno {
+            background: #f0f9ff;
+            color: #0369a1;
+        }
+
+        .role-preceptor {
+            background: #ddd6fe;
+            color: #6d28d9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: #1e40af;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #1e3a8a;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #dc2626;
+            font-size: 1rem;
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            padding-left: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            padding: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f8fafc;
+            color: #1e40af;
+            border-color: #1e40af;
+        }
+
+        .page-btn:disabled {
+            background: #f1f5f9;
+            color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Gestión de Usuarios</h1>
+            <p>Panel de administración del sistema</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Listado de Usuarios</h2>
+                <span class="badge" id="userCount">Cargando...</span>
+            </div>
+
+            <div style="padding: 20px 30px 0;">
+                <div class="controls-container">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Buscar por nombre, email, rol...">
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Cargando usuarios...</p>
+            </div>
+
+            <table id="usersTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usersBody">
+                </tbody>
+            </table>
+
+            <div class="pagination" id="paginationControls" style="display:none;">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)">Anterior</button>
+                <span class="page-info">Página <span id="currentPage">1</span> de <span id="totalPages">1</span></span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)">Siguiente</button>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let searchTimeout;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    loadUsers(e.target.value);
+                }, 300);
+            });
+        });
+
+        async function loadUsers(search = '') {
+            const loading = document.getElementById('loading');
+            const table = document.getElementById('usersTable');
+            const errorDiv = document.getElementById('errorMessage');
+            const pagination = document.getElementById('paginationControls');
+
+            loading.style.display = 'block';
+            table.style.display = 'none';
+            errorDiv.style.display = 'none';
+            pagination.style.display = 'none';
+
+            try {
+                const queryParams = new URLSearchParams({
+                    page: currentPage,
+                    limit: 5,
+                    q: search
+                });
+
+                const response = await fetch(`/api/usuarios?${queryParams}`);
+                if (!response.ok) throw new Error('Error al cargar usuarios');
+                const data = await response.json();
+
+                const users = data.users;
+                totalPages = data.totalPages;
+                currentPage = data.page;
+
+                const tbody = document.getElementById('usersBody');
+                tbody.innerHTML = '';
+
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 30px;">No se encontraron usuarios</td></tr>';
+                } else {
+                    users.forEach(user => {
+                        const roleClass = `role-${user.rol}`;
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><strong>#${user.id}</strong></td>
+                            <td>
+                                <div class="user-name">${user.nombres} ${user.apellidos}</div>
+                                <div class="user-email">${user.email}</div>
+                            </td>
+                            <td><span class="role-badge ${roleClass}">${user.rol}</span></td>
+                            <td>
+                                <a href="/admin/usuarios/${user.id}/editar" class="btn btn-edit">Editar</a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                document.getElementById('userCount').innerText = `${data.total} usuario${data.total !== 1 ? 's' : ''}`;
+                document.getElementById('currentPage').innerText = currentPage;
+                document.getElementById('totalPages').innerText = totalPages;
+
+                document.getElementById('prevBtn').disabled = currentPage <= 1;
+                document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+
+                loading.style.display = 'none';
+                table.style.display = 'table';
+                if (totalPages > 1) pagination.style.display = 'flex';
+
+            } catch (error) {
+                loading.style.display = 'none';
+                errorDiv.innerText = 'Error al cargar los usuarios. Por favor, intente nuevamente.';
+                errorDiv.style.display = 'block';
+                console.error(error);
+            }
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                const search = document.getElementById('searchInput').value;
+                loadUsers(search);
+            }
+        }
+    </script>
+</body>
+
+</html>
