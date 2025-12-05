@@ -1,30 +1,30 @@
 :root {
-    /* Base crema suave */
+    /* Base crema suave
     --background: #fdf9f4;
     /* fondo general */
-    --sidebar: #f8efe3;
+    /*--sidebar: #f8efe3;*/
     /* columna izq. */
-    --card: #fbfbfb;
+    /*--card: #fbfbfb;*/
     /* tarjetas/pills */
-    --border: #f1e3da;
+    /*--border: #f1e3da;*/
     /* bordes sutiles */
 
     /* Texto */
-    --foreground: #1F2D2E;
+    /*--foreground: #1F2D2E;*/
     /* texto principal */
-    --muted: #7F8C8B;
+    /*--muted: #7F8C8B;*/
     /* texto secundario */
 
     /* Marca unificada (como los íconos E y check) */
-    --primary: #18BDB0;
-    --secondary: #18BDB0;
+    /*--primary: #18BDB0;*/
+    /*--secondary: #18BDB0;*/
     /* igualado a primary */
-    --accent: #3ad1a1;
+    /*--accent: #3ad1a1;*/
     /* igualado a primary */
 
-    --background-blur: rgba(255, 255, 255, .5);
+    /*--background-blur: rgba(255, 255, 255, .5);
 
-    /* Sombra/anillo muy sutil */
+    /* Sombra/anillo muy sutil
     --ring: rgba(0, 0, 0, .06);
 
     .btn-primary:hover {
@@ -35,10 +35,7 @@
     --info: #2CB1EA;
     --success: #37D69C;
     --warning: #F0C361;
-    --danger: #EF6A74;
-}
-
-html.dark {
+    --danger: #EF6A74;*/
     /* Equivalentes en dark manteniendo el turquesa */
     --background: #0E1416;
     --sidebar: #0F171A;
@@ -62,4 +59,8 @@ html.dark {
     --success: #37D69C;
     --warning: #F0C361;
     --danger: #EF6A74;
+}
+
+html.dark {
+    
 }
