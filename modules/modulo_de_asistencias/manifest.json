@@ -1,0 +1,11 @@
+{
+    "name": "modulo-asistencias",
+    "language": "node",
+    "start": "node",
+    "args": [
+        "server.js"
+    ],
+    "cwd": "modulo_de_asistencias",
+    "env": {},
+    "healthPath": "/health"
+}

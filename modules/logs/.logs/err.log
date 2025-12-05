@@ -1,0 +1,304 @@
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+`x-forwarded-host` header with value `127.0.0.1:64328` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+`x-forwarded-host` header with value `127.0.0.1:61304` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+`x-forwarded-host` header with value `127.0.0.1:53867` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '3515436689'
+}
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+`x-forwarded-host` header with value `127.0.0.1:60088` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '4227274577'
+}
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+`x-forwarded-host` header with value `127.0.0.1:57567` does not match `origin` header with value `localhost:3000` from a forwarded Server Actions request. Aborting the action.
+ ⨯ Error: Invalid Server Actions request.
+    at ignore-listed frames {
+  digest: '4227274577'
+}
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\next-config-mjs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+node:internal/modules/cjs/loader:1404
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\logs\node_modules\next\dist\bin\next'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1401:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v22.16.0
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\logs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\logs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\logs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\owomo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\modules\logs\pnpm-lock.yaml
+   * C:\Users\owomo\colegio de mierda\proyectos\contenedor-modulos\pnpm-lock.yaml
+

@@ -1,0 +1,12 @@
+{
+  "name": "Módulo de Alumnos",
+  "slug": "modulo-alumnos",
+  "language": "node",
+  "start": "node",
+  "args": ["server.js"],
+  "cwd": ".",
+  "healthPath": "/health",
+  "env": {}
+}
+
+

@@ -1,0 +1,9 @@
+{
+  "name": "Gestor de Profesores",
+  "slug": "gestor-profesores",
+  "language": "node",
+  "start": "npm",
+  "args": ["run", "start"],
+  "cwd": ".",
+  "healthPath": "/health"
+}

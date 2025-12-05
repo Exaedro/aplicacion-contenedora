@@ -57,8 +57,24 @@
           // Helper para iniciales
           function initialsOf(str) {
             if (!str) return '';
-            const s = String(str).toUpperCase();
-            return (s[0] || '') + (s[1] || '');
+
+            const STOP_WORDS = new Set([
+              "de", "del", "la", "las", "el", "los", "en", "y", "a", "un", "una", "unas", "unos", "para", "por"
+            ]);
+
+            const words = String(str)
+              .toLowerCase()
+              .split(/[\s\-]+/) // separa por espacios o guiones
+              .filter(w => w && !STOP_WORDS.has(w)); // ignora conectores
+
+            // Tomar primeras 2 palabras significativas
+            const initials = words
+              .slice(0, 2)
+              .map(w => w[0].toUpperCase())
+              .join('');
+
+            return initials;
+    
           }
         %>
 
@@ -83,7 +99,7 @@
                   class="avatar avatar-modulo primary-20 open-module"
                   data-name="<%= label %>" 
                   data-slug="<%= m.slug %>">
-                  <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                  <span class="avatar__text"><%= initialsOf(label || '') %></span>
                 </a>
               <% }) %>
             <% } else { %>
@@ -105,7 +121,7 @@
                     <a href="/apps/<%= m.slug %>" 
                       class="avatar avatar-modulo primary-20 open-module"
                       data-name="<%= label %>" data-slug="<%= m.slug %>">
-                      <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                      <span class="avatar__text"><%= initialsOf(label || '') %></span>
                     </a>
                   <% }) %>
                 <% } %>
@@ -126,7 +142,7 @@
                     <a href="/apps/<%= m.slug %>" 
                       class="avatar avatar-modulo primary-20 open-module"
                       data-name="<%= label %>" data-slug="<%= m.slug %>" data-state="escondido">
-                      <span class="avatar__text"><%= (label || '').toUpperCase().slice(0,2) %></span>
+                      <span class="avatar__text"><%= initialsOf(label || '') %></span>
                     </a>
                   <% }) %>
                 <% } %>
